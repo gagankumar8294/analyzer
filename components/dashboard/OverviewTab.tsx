@@ -32,10 +32,10 @@ function buildFrequencySeries(posts: AnalysisResult['posts']) {
 }
 
 function getScoreColor(value: number): string {
-  if (value >= 80) return '#22C55E';
-  if (value >= 60) return '#84CC16';
-  if (value >= 40) return '#F59E0B';
-  return '#EF4444';
+  if (value >= 80) return '#22c55e';
+  if (value >= 60) return '#84cc16';
+  if (value >= 40) return '#eab308';
+  return '#ef4444';
 }
 
 const ScoreRing = ({ value, label, subtitle }: { value: number; label: string; subtitle: string }) => {
@@ -43,8 +43,8 @@ const ScoreRing = ({ value, label, subtitle }: { value: number; label: string; s
   const c = 2 * Math.PI * r;
   const color = getScoreColor(value);
   return (
-    <div className="flex flex-col items-center gap-2.5 p-4 rounded-xl bg-elevated/40 border border-subtle text-center transition-all hover:border-default">
-      <div className="relative w-[72px] h-[72px] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3 p-5 rounded-xl text-center transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+      <div className="relative w-[76px] h-[76px] flex items-center justify-center">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 72 72">
           <circle cx="36" cy="36" r={r} stroke="rgba(255,255,255,0.04)" fill="none" strokeWidth="5" />
           <circle cx="36" cy="36" r={r} fill="none" strokeWidth="5"
@@ -53,14 +53,13 @@ const ScoreRing = ({ value, label, subtitle }: { value: number; label: string; s
             strokeDashoffset={c - (value / 100) * c}
             strokeLinecap="round"
             className="transition-all duration-1000"
-            style={{ filter: `drop-shadow(0 0 4px ${color}40)` }}
           />
         </svg>
         <span className="absolute text-sm font-extrabold" style={{ color }}>{value}%</span>
       </div>
       <div>
-        <p className="text-[11px] font-bold text-primary">{label}</p>
-        <p className="text-[9px] text-muted mt-0.5">{subtitle}</p>
+        <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{label}</p>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{subtitle}</p>
       </div>
     </div>
   );
@@ -69,8 +68,8 @@ const ScoreRing = ({ value, label, subtitle }: { value: number; label: string; s
 const ChartTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-elevated border border-default rounded-lg p-3 shadow-lg text-xs">
-      <p className="font-bold text-primary mb-1">{label}</p>
+    <div className="p-3 rounded-xl text-xs shadow-lg" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)' }}>
+      <p className="font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{label}</p>
       {payload.map((p: any) => (
         <p key={p.name} style={{ color: p.color }}>{p.name}: {formatCount(p.value)}</p>
       ))}
@@ -88,44 +87,44 @@ export default function OverviewTab({ data }: Props) {
   const er       = profile.followers > 0 ? ((avgEng / profile.followers) * 100).toFixed(2) : '0.00';
 
   const stats = [
-    { label: 'Followers',     value: formatCount(profile.followers), icon: Users,     gradient: 'from-pink-500/15 to-rose-500/10', iconColor: 'text-pink-400' },
-    { label: 'Following',     value: formatCount(profile.following), icon: UserCheck,  gradient: 'from-purple-500/15 to-violet-500/10', iconColor: 'text-purple-400' },
-    { label: 'Total Posts',   value: formatCount(profile.totalPosts), icon: ImageIcon, gradient: 'from-blue-500/15 to-cyan-500/10', iconColor: 'text-blue-400' },
-    { label: 'Avg Eng. Rate', value: `${er}%`,                        icon: TrendingUp, gradient: 'from-green-500/15 to-emerald-500/10', iconColor: 'text-green-400' },
+    { label: 'Followers',     value: formatCount(profile.followers), icon: Users },
+    { label: 'Following',     value: formatCount(profile.following), icon: UserCheck },
+    { label: 'Total Posts',   value: formatCount(profile.totalPosts), icon: ImageIcon },
+    { label: 'Avg Eng. Rate', value: `${er}%`, icon: TrendingUp },
   ];
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-8 animate-fade-in">
 
       {/* Profile card */}
       <div className="card-static rounded-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand/5 via-transparent to-purple/5 pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-purple via-brand to-orange opacity-60" />
-        <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'var(--gradient-brand)', opacity: 0.6 }} />
+        <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="relative shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={profile.profilePicUrl || '/placeholder-avatar.png'} alt={profile.fullName}
-              className="w-20 h-20 rounded-2xl object-cover ring-2 ring-brand/20 shadow-lg"
+              className="w-20 h-20 rounded-2xl object-cover"
+              style={{ border: '2px solid var(--border-default)', boxShadow: 'var(--shadow-md)' }}
               onError={e => { (e.target as HTMLImageElement).src = '/placeholder-avatar.png'; }}
             />
             {profile.isVerified && (
-              <div className="absolute -bottom-1.5 -right-1.5 p-1 bg-brand-gradient rounded-full border-2 border-surface shadow-md">
+              <div className="absolute -bottom-1.5 -right-1.5 p-1.5 rounded-full" style={{ background: 'var(--gradient-brand)', border: '2px solid var(--bg-surface)' }}>
                 <Award className="w-3.5 h-3.5 text-white" />
               </div>
             )}
           </div>
-          <div className="flex-1 text-center sm:text-left flex flex-col gap-1.5">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <h1 className="text-xl font-extrabold text-primary">{profile.fullName}</h1>
-              <span className="text-[10px] text-muted bg-elevated border border-subtle px-2 py-0.5 rounded-full self-center sm:self-start font-medium">@{profile.username}</span>
+          <div className="flex-1 text-center sm:text-left flex flex-col gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
+              <h1 className="text-xl font-extrabold" style={{ color: 'var(--text-primary)' }}>{profile.fullName}</h1>
+              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full self-center sm:self-start" style={{ color: 'var(--text-muted)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>@{profile.username}</span>
             </div>
-            {profile.category && <span className="text-[10px] font-bold text-brand uppercase tracking-wider self-center sm:self-start">{profile.category}</span>}
-            <p className="text-xs text-muted leading-relaxed max-w-2xl">{profile.bio || 'No bio provided.'}</p>
+            {profile.category && <span className="text-xs font-bold uppercase tracking-wider self-center sm:self-start" style={{ color: 'var(--brand-primary)' }}>{profile.category}</span>}
+            <p className="text-sm leading-relaxed max-w-2xl" style={{ color: 'var(--text-secondary)' }}>{profile.bio || 'No bio provided.'}</p>
             {profile.externalUrl && (
               <a href={profile.externalUrl.startsWith('http') ? profile.externalUrl : `https://${profile.externalUrl}`}
                 target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:underline w-fit self-center sm:self-start">
-                <ExternalLink className="w-3 h-3" />{profile.externalUrl}
+                className="inline-flex items-center gap-2 text-sm font-semibold w-fit self-center sm:self-start" style={{ color: 'var(--brand-primary)' }}>
+                <ExternalLink className="w-3.5 h-3.5" />{profile.externalUrl}
               </a>
             )}
           </div>
@@ -133,74 +132,72 @@ export default function OverviewTab({ data }: Props) {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => {
           const Icon = s.icon;
           return (
             <div key={i} className="stat-card">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-muted uppercase tracking-wider">{s.label}</span>
-                <div className={`p-1.5 rounded-lg bg-gradient-to-br ${s.gradient}`}>
-                  <Icon className={`w-3.5 h-3.5 ${s.iconColor}`} />
+                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{s.label}</span>
+                <div className="p-2 rounded-lg" style={{ background: 'var(--gradient-brand-soft)' }}>
+                  <Icon className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
                 </div>
               </div>
-              <span className="text-2xl font-extrabold text-primary tracking-tight">{s.value}</span>
+              <span className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>{s.value}</span>
             </div>
           );
         })}
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* Engagement over time */}
         <div className="card flex flex-col">
           <div className="card-header">
-            <TrendingUp className="w-4 h-4 text-brand" />
-            <h3 className="text-sm font-bold text-primary flex-1">Engagement Over Time</h3>
-            <span className="text-[10px] text-muted">Last 20 posts</span>
+            <TrendingUp className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+            <h3 className="text-sm font-bold flex-1" style={{ color: 'var(--text-primary)' }}>Engagement Over Time</h3>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Last 20 posts</span>
           </div>
           {engSeries.length > 1 ? (
-            <ResponsiveContainer width="100%" height={190}>
-              <AreaChart data={engSeries} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={200}>
+              <AreaChart data={engSeries} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gradLikes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#E1306C" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#E1306C" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} width={35} />
                 <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="likes" name="Likes" stroke="#E1306C" strokeWidth={2} fill="url(#gradLikes)" />
-                <Area type="monotone" dataKey="comments" name="Comments" stroke="#833AB4" strokeWidth={1.5} fill="transparent" />
+                <Area type="monotone" dataKey="likes" name="Likes" stroke="#6366f1" strokeWidth={2} fill="url(#gradLikes)" />
+                <Area type="monotone" dataKey="comments" name="Comments" stroke="#8b5cf6" strokeWidth={1.5} fill="transparent" />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[190px] flex items-center justify-center text-xs text-muted">Not enough post data</div>
+            <div className="h-[200px] flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>Not enough post data</div>
           )}
         </div>
 
-        {/* Posts per month */}
         <div className="card flex flex-col">
           <div className="card-header">
-            <Layers className="w-4 h-4 text-brand" />
-            <h3 className="text-sm font-bold text-primary flex-1">Posting Frequency</h3>
-            <span className="text-[10px] text-muted">Per month</span>
+            <Layers className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+            <h3 className="text-sm font-bold flex-1" style={{ color: 'var(--text-primary)' }}>Posting Frequency</h3>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Per month</span>
           </div>
           {freqSeries.length > 1 ? (
-            <ResponsiveContainer width="100%" height={190}>
-              <BarChart data={freqSeries} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={freqSeries} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                <XAxis dataKey="month" tick={{ fontSize: 9, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--text-muted)' }} tickLine={false} axisLine={false} width={35} />
                 <Tooltip content={<ChartTooltip />} />
-                <Bar dataKey="count" name="Posts" fill="#E1306C" radius={[4, 4, 0, 0]} opacity={0.8} />
+                <Bar dataKey="count" name="Posts" fill="#6366f1" radius={[4, 4, 0, 0]} opacity={0.8} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-[190px] flex items-center justify-center text-xs text-muted">Not enough post data</div>
+            <div className="h-[200px] flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>Not enough post data</div>
           )}
         </div>
       </div>
@@ -208,10 +205,10 @@ export default function OverviewTab({ data }: Props) {
       {/* Score rings */}
       <div className="card flex flex-col">
         <div className="card-header">
-          <Sparkles className="w-4 h-4 text-brand" />
-          <h3 className="text-sm font-bold text-primary">Performance Scores</h3>
+          <Sparkles className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+          <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Performance Scores</h3>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           <ScoreRing value={scores.engagement}         label="Engagement"  subtitle="Interaction rate" />
           <ScoreRing value={scores.postingConsistency} label="Consistency" subtitle="Upload rhythm" />
           <ScoreRing value={scores.branding}           label="Branding"    subtitle="Profile setup" />
@@ -223,14 +220,14 @@ export default function OverviewTab({ data }: Props) {
 
       {/* AI quick summary */}
       {data.aiSummary && (
-        <div className="card-brand rounded-2xl p-5 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <div className="p-1 rounded-md bg-brand/15">
-              <Sparkles className="w-3.5 h-3.5 text-brand" />
+        <div className="card-brand rounded-2xl p-6 flex flex-col gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg" style={{ background: 'rgba(99,102,241,0.1)' }}>
+              <Sparkles className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
             </div>
-            <span className="text-[10px] font-bold text-brand uppercase tracking-wider">AI Profile Summary</span>
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-primary)' }}>AI Profile Summary</span>
           </div>
-          <p className="text-xs text-primary/90 leading-relaxed">{data.aiSummary}</p>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{data.aiSummary}</p>
         </div>
       )}
     </div>

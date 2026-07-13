@@ -1,15 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Sparkles, 
-  FileText,
-  Copy, 
-  Check, 
-  RefreshCw,
-  Send,
-  MessageSquare
-} from 'lucide-react';
+import { Sparkles, FileText, Copy, Check, RefreshCw, Send, MessageSquare } from 'lucide-react';
 
 interface GeneratedPost {
   contentType: 'REEL' | 'CAROUSEL' | 'IMAGE' | 'STORY';
@@ -64,42 +56,39 @@ export default function GeneratorTab() {
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-8 animate-fade-in">
       
-      {/* Page Title */}
       <div className="card-static rounded-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand/5 to-purple/5 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.04) 0%, rgba(139,92,246,0.03) 100%)' }} />
         <div className="relative">
-          <h2 className="text-base font-extrabold text-primary">AI Content Writer Playground</h2>
-          <p className="text-[11px] text-muted mt-0.5">
+          <h2 className="text-lg font-extrabold" style={{ color: 'var(--text-primary)' }}>AI Content Writer Playground</h2>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
             Draft bespoke, high-converting posts customized to your exact niche and audience in seconds.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Left Side: Setup Form */}
-        <form onSubmit={handleGenerate} className="card lg:col-span-5 flex flex-col gap-4 self-start">
+        <form onSubmit={handleGenerate} className="card lg:col-span-5 flex flex-col gap-5 self-start">
           <div className="card-header">
-            <Sparkles className="w-4 h-4 text-brand" />
-            <h3 className="text-sm font-bold text-primary">Post Settings</h3>
+            <Sparkles className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+            <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Post Settings</h3>
           </div>
 
-          {/* Format selector */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Format</label>
-            <div className="grid grid-cols-4 gap-1.5 bg-elevated border border-subtle p-1 rounded-xl">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Format</label>
+            <div className="grid grid-cols-4 gap-1.5 p-1.5 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
               {(['REEL', 'CAROUSEL', 'IMAGE', 'STORY'] as const).map(fmt => (
                 <button
                   key={fmt}
                   type="button"
                   onClick={() => setContentType(fmt)}
-                  className={`py-2 px-1 rounded-lg text-[10px] font-bold transition-all ${
-                    contentType === fmt 
-                      ? 'bg-brand text-white shadow-sm' 
-                      : 'text-muted hover:text-primary'
-                  }`}
+                  className="py-2.5 px-1 rounded-lg text-xs font-bold transition-all"
+                  style={{
+                    background: contentType === fmt ? 'var(--brand-primary)' : 'transparent',
+                    color: contentType === fmt ? '#fff' : 'var(--text-muted)',
+                  }}
                 >
                   {fmt}
                 </button>
@@ -107,9 +96,8 @@ export default function GeneratorTab() {
             </div>
           </div>
 
-          {/* Topic description */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Topic / Focus keywords</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Topic / Focus keywords</label>
             <textarea
               className="textarea"
               rows={4}
@@ -120,9 +108,8 @@ export default function GeneratorTab() {
             />
           </div>
 
-          {/* Tone Selector */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Tone of Voice</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Tone of Voice</label>
             <select className="input w-full" value={tone} onChange={e => setTone(e.target.value)}>
               <option value="Inspirational & Professional">Inspirational & Professional</option>
               <option value="Direct & Analytical">Direct & Analytical</option>
@@ -134,7 +121,7 @@ export default function GeneratorTab() {
           <button
             type="submit"
             disabled={loading || !topic}
-            className="btn-primary w-full flex items-center justify-center gap-2 mt-1"
+            className="btn btn-primary w-full flex items-center justify-center gap-2.5 mt-1"
           >
             {loading ? (
               <><RefreshCw className="w-4 h-4 animate-spin" />Drafting...</>
@@ -144,72 +131,67 @@ export default function GeneratorTab() {
           </button>
         </form>
 
-        {/* Right Side: Results */}
         <div className="lg:col-span-7 flex flex-col gap-5">
           {result ? (
-            <div className="card flex flex-col gap-4 relative animate-fade-in">
+            <div className="card flex flex-col gap-5 relative animate-fade-in">
               <div className="card-header">
-                <FileText className="w-4 h-4 text-brand" />
-                <span className="text-sm font-bold text-primary flex-1">{result.theme}</span>
+                <FileText className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+                <span className="text-sm font-bold flex-1" style={{ color: 'var(--text-primary)' }}>{result.theme}</span>
                 <button onClick={handleCopyAll}
-                  className="px-2.5 py-1 rounded-lg border border-subtle bg-elevated/40 hover:border-brand/20 transition-all text-[10px] font-bold text-primary flex items-center gap-1">
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
                   {copyStatus['all'] ? (
-                    <><Check className="w-3 h-3 text-green-400" />Copied!</>
+                    <><Check className="w-3.5 h-3.5" style={{ color: '#4ade80' }} />Copied!</>
                   ) : (
-                    <><Copy className="w-3 h-3 text-brand" />Copy All</>
+                    <><Copy className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} />Copy All</>
                   )}
                 </button>
               </div>
 
-              {/* Hook Box */}
-              <div className="flex flex-col gap-1.5 bg-elevated/30 border border-subtle p-3.5 rounded-xl relative group">
+              <div className="flex flex-col gap-2 p-4 rounded-xl relative group" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                 <div className="flex justify-between items-center">
-                  <span className="text-[9px] font-bold text-brand uppercase tracking-wider">Hook text overlay</span>
+                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-primary)', fontSize: '0.65rem' }}>Hook text overlay</span>
                   <button onClick={() => handleCopy('hook', result.hook)}
-                    className="p-1 hover:bg-elevated rounded text-muted hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    {copyStatus['hook'] ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                    className="p-1.5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" style={{ color: 'var(--text-muted)' }}>
+                    {copyStatus['hook'] ? <Check className="w-3.5 h-3.5" style={{ color: '#4ade80' }} /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-                <p className="text-xs font-bold text-primary italic">&ldquo;{result.hook}&rdquo;</p>
+                <p className="text-sm font-bold italic leading-relaxed" style={{ color: 'var(--text-primary)' }}>&ldquo;{result.hook}&rdquo;</p>
               </div>
 
-              {/* Caption Box */}
-              <div className="flex flex-col gap-1.5 bg-elevated/30 border border-subtle p-3.5 rounded-xl relative group">
+              <div className="flex flex-col gap-2 p-4 rounded-xl relative group" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                 <div className="flex justify-between items-center">
-                  <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Caption Copy</span>
+                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Caption Copy</span>
                   <button onClick={() => handleCopy('caption', result.caption)}
-                    className="p-1 hover:bg-elevated rounded text-muted hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    {copyStatus['caption'] ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                    className="p-1.5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" style={{ color: 'var(--text-muted)' }}>
+                    {copyStatus['caption'] ? <Check className="w-3.5 h-3.5" style={{ color: '#4ade80' }} /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
-                <p className="text-xs text-primary leading-relaxed whitespace-pre-line">{result.caption}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-primary)' }}>{result.caption}</p>
               </div>
 
-              {/* Script Box */}
               {result.contentType === 'REEL' && result.script && (
-                <div className="flex flex-col gap-1.5 bg-elevated/30 border border-subtle p-3.5 rounded-xl relative group">
+                <div className="flex flex-col gap-2 p-4 rounded-xl relative group" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Reels Script & Cues</span>
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-secondary)', fontSize: '0.65rem' }}>Reels Script & Cues</span>
                     <button onClick={() => handleCopy('script', result.script)}
-                      className="p-1 hover:bg-elevated rounded text-muted hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                      {copyStatus['script'] ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                      className="p-1.5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" style={{ color: 'var(--text-muted)' }}>
+                      {copyStatus['script'] ? <Check className="w-3.5 h-3.5" style={{ color: '#4ade80' }} /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
                   </div>
-                  <p className="text-xs text-primary leading-relaxed whitespace-pre-line">{result.script}</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-primary)' }}>{result.script}</p>
                 </div>
               )}
 
-              {/* CTA & Tags */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5 bg-elevated/30 border border-subtle p-3.5 rounded-xl">
-                  <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Call to Action</span>
-                  <p className="text-xs font-semibold text-primary">{result.cta}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Call to Action</span>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{result.cta}</p>
                 </div>
-                <div className="flex flex-col gap-1.5 bg-elevated/30 border border-subtle p-3.5 rounded-xl">
-                  <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Tags</span>
-                  <div className="flex flex-wrap gap-1 mt-0.5">
+                <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Tags</span>
+                  <div className="flex flex-wrap gap-1.5 mt-0.5">
                     {result.hashtags.map((tag, tIdx) => (
-                      <span key={tIdx} className="px-1.5 py-0.5 rounded bg-elevated border border-subtle text-[9px] font-bold text-brand">
+                      <span key={tIdx} className="px-2 py-0.5 rounded-lg text-xs font-bold" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)' }}>
                         {tag}
                       </span>
                     ))}
@@ -218,10 +200,10 @@ export default function GeneratorTab() {
               </div>
             </div>
           ) : (
-            <div className="card p-14 text-center flex flex-col items-center justify-center border-dashed border-2 border-subtle h-full min-h-[280px]">
-              <MessageSquare className="w-10 h-10 text-muted mb-3 animate-bounce" />
-              <p className="text-xs font-bold text-primary">No Outline Drafted Yet</p>
-              <p className="text-[10px] text-muted max-w-xs mt-1">
+            <div className="card p-16 text-center flex flex-col items-center justify-center h-full min-h-[300px]" style={{ borderStyle: 'dashed', borderWidth: '2px' }}>
+              <MessageSquare className="w-10 h-10 mb-4 animate-bounce" style={{ color: 'var(--text-muted)' }} />
+              <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>No Outline Drafted Yet</p>
+              <p className="text-xs max-w-xs mt-1.5" style={{ color: 'var(--text-muted)' }}>
                 Enter your keywords on the left and select a format to kick off your strategy session.
               </p>
             </div>

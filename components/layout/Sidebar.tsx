@@ -36,51 +36,56 @@ export default function Sidebar({ onBack }: SidebarProps) {
   const profile = result?.profile;
 
   return (
-    <aside className="hidden lg:flex w-[var(--sidebar-width)] border-r border-default bg-surface flex-col justify-between h-screen sticky top-0 shrink-0">
-      {/* Top Section */}
+    <aside
+      className="hidden lg:flex flex-col justify-between h-screen sticky top-0 shrink-0"
+      style={{
+        width: 'var(--sidebar-width)',
+        borderRight: '1px solid var(--border-default)',
+        background: 'var(--bg-surface)',
+      }}
+    >
       <div className="flex flex-col">
-        {/* Brand Header */}
-        <div className="h-[var(--header-height)] flex items-center gap-2 px-6 border-b border-subtle">
-          <div className="w-8 h-8 rounded-lg bg-brand-gradient flex items-center justify-center shadow-brand">
-            <Sparkles className="w-4 h-4 text-white" />
+        <div
+          className="flex items-center gap-3 px-6"
+          style={{ height: 'var(--header-height)', borderBottom: '1px solid var(--border-subtle)' }}
+        >
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--gradient-brand)', boxShadow: 'var(--shadow-brand)' }}>
+            <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
-          <span className="font-extrabold text-body-sm tracking-tight bg-brand-gradient-animated bg-clip-text text-transparent">
-            InstaAnalyzer
-          </span>
+          <span className="font-bold text-sm gradient-text">InstaAnalyzer</span>
         </div>
 
-        {/* Profile Card Summary */}
-        <div className="p-4 border-b border-subtle">
+        <div className="p-5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           {profile ? (
-            <div className="flex items-center gap-3 p-2 rounded-lg bg-elevated/40 border border-subtle">
+            <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={profile.profilePicUrl || '/placeholder-avatar.png'}
                 alt={profile.fullName || profile.username}
-                className="w-10 h-10 rounded-full object-cover border border-brand/30"
+                className="w-10 h-10 rounded-full object-cover"
+                style={{ border: '2px solid var(--border-default)' }}
               />
               <div className="min-w-0">
-                <p className="text-body-sm font-bold text-primary truncate">
+                <p className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>
                   {profile.fullName || profile.username}
                 </p>
-                <p className="text-caption text-muted truncate">
+                <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
                   @{profile.username}
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3 p-2 rounded-lg bg-elevated/40 border border-subtle animate-pulse">
-              <div className="w-10 h-10 rounded-full bg-hover" />
-              <div className="flex-1 flex flex-col gap-1.5">
-                <div className="h-3 w-20 bg-hover rounded" />
-                <div className="h-2 w-12 bg-hover rounded" />
+            <div className="flex items-center gap-3 p-3 rounded-xl animate-pulse" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+              <div className="w-10 h-10 rounded-full" style={{ background: 'var(--bg-hover)' }} />
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="h-3 w-20 rounded" style={{ background: 'var(--bg-hover)' }} />
+                <div className="h-2 w-12 rounded" style={{ background: 'var(--bg-hover)' }} />
               </div>
             </div>
           )}
         </div>
 
-        {/* Menu Navigation */}
-        <nav className="p-3 flex flex-col gap-1">
+        <nav className="p-4 flex flex-col gap-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -88,13 +93,14 @@ export default function Sidebar({ onBack }: SidebarProps) {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-body-sm font-semibold transition-all duration-200
-                  ${isActive 
-                    ? 'bg-brand-gradient/10 border border-brand/20 text-brand' 
-                    : 'text-muted hover:text-primary hover:bg-elevated/50 border border-transparent'}
-                `}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+                style={{
+                  background: isActive ? 'rgba(99,102,241,0.1)' : 'transparent',
+                  border: isActive ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
+                  color: isActive ? 'var(--brand-primary)' : 'var(--text-secondary)',
+                }}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-brand' : 'text-muted'}`} />
+                <Icon className="w-4.5 h-4.5" />
                 {item.label}
               </button>
             );
@@ -102,11 +108,13 @@ export default function Sidebar({ onBack }: SidebarProps) {
         </nav>
       </div>
 
-      {/* Footer Back Button */}
-      <div className="p-4 border-t border-subtle">
+      <div className="p-5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
         <button
           onClick={onBack}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-body-sm font-semibold text-muted hover:text-primary hover:bg-elevated/50 transition-all border border-subtle"
+          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all"
+          style={{ color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-primary)'; e.currentTarget.style.background = 'var(--bg-elevated)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
         >
           <LogOut className="w-4 h-4 rotate-180" />
           Exit Analysis

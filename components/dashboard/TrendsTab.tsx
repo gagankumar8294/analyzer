@@ -1,14 +1,7 @@
 'use client';
 
 import React from 'react';
-import { 
-  TrendingUp, 
-  Hash, 
-  Play, 
-  Music, 
-  Sparkles,
-  Bookmark
-} from 'lucide-react';
+import { TrendingUp, Hash, Play, Music, Sparkles, Bookmark } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
 
 interface TrendsTabProps {
@@ -58,70 +51,68 @@ export default function TrendsTab({ data }: TrendsTabProps) {
   const { nicheTrends, viralHooks, trendingTags } = getCategoryTrends(category);
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-8 animate-fade-in">
       
-      {/* Page Title */}
-      <div className="card-static rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand/5 to-purple/5 pointer-events-none" />
+      <div className="card-static rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.04) 0%, rgba(139,92,246,0.03) 100%)' }} />
         <div className="relative">
-          <h2 className="text-base font-extrabold text-primary">Viral Trend Intelligence</h2>
-          <p className="text-[11px] text-muted mt-0.5">
-            Algorithmic patterns, viral hooks, and hashtag recommendations mapped for the <span className="text-brand font-bold uppercase">&ldquo;{category}&rdquo;</span> vertical.
+          <h2 className="text-lg font-extrabold" style={{ color: 'var(--text-primary)' }}>Viral Trend Intelligence</h2>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+            Algorithmic patterns, viral hooks, and hashtag recommendations mapped for the <span className="font-bold uppercase" style={{ color: 'var(--brand-primary)' }}>&ldquo;{category}&rdquo;</span> vertical.
           </p>
         </div>
-        <span className="px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/18 text-[10px] font-bold text-purple-400 flex items-center gap-1 relative">
-          <Sparkles className="w-3 h-3" />
+        <span className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 relative" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', color: 'var(--brand-secondary)' }}>
+          <Sparkles className="w-3.5 h-3.5" />
           AI-Powered
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* Left Side: Hooks & Tags */}
-        <div className="lg:col-span-7 flex flex-col gap-5">
+        <div className="lg:col-span-7 flex flex-col gap-6">
           
-          {/* Viral Hooks Card */}
           <div className="card flex flex-col">
             <div className="card-header">
-              <Play className="w-4 h-4 text-brand" />
-              <h3 className="text-sm font-bold text-primary">High-Converting Hook Templates</h3>
+              <Play className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+              <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>High-Converting Hook Templates</h3>
             </div>
 
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-3">
               {viralHooks.map((hItem, idx) => (
-                <div key={idx} className="p-3.5 rounded-xl bg-elevated/30 border border-subtle flex flex-col gap-1.5 relative group hover:border-brand/15 transition-all">
+                <div key={idx} className="p-4 rounded-xl flex flex-col gap-2 relative group transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                   <div className="flex justify-between items-center">
-                    <span className="text-[8px] font-extrabold text-brand uppercase tracking-wider">Hook {idx + 1}</span>
-                    <span className="text-[10px] text-muted font-medium">{hItem.use}</span>
+                    <span className="text-xs font-extrabold uppercase tracking-wider" style={{ color: 'var(--brand-primary)', fontSize: '0.6rem' }}>Hook {idx + 1}</span>
+                    <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{hItem.use}</span>
                   </div>
-                  <p className="text-xs font-bold text-primary leading-relaxed">&ldquo;{hItem.hook}&rdquo;</p>
+                  <p className="text-sm font-bold leading-relaxed" style={{ color: 'var(--text-primary)' }}>&ldquo;{hItem.hook}&rdquo;</p>
                   
                   <button 
                     onClick={() => navigator.clipboard.writeText(hItem.hook)}
-                    className="absolute right-2.5 bottom-2.5 p-1 bg-elevated border border-subtle text-muted hover:text-primary rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute right-3 bottom-3 p-1.5 rounded-lg transition-opacity opacity-0 group-hover:opacity-100"
+                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
                     title="Copy Hook"
                   >
-                    <Bookmark className="w-3 h-3" />
+                    <Bookmark className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Trending Tags Card */}
           <div className="card flex flex-col">
             <div className="card-header">
-              <Hash className="w-4 h-4 text-purple-400" />
-              <h3 className="text-sm font-bold text-primary">Recommended Tags</h3>
+              <Hash className="w-4 h-4" style={{ color: 'var(--brand-secondary)' }} />
+              <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Recommended Tags</h3>
             </div>
 
-            <div className="flex flex-wrap gap-2 py-0.5">
+            <div className="flex flex-wrap gap-2.5 py-1">
               {trendingTags.map((tag, idx) => (
                 <span 
                   key={idx} 
-                  className="px-3 py-1.5 rounded-xl bg-elevated/40 border border-subtle text-[10px] font-semibold text-primary flex items-center gap-1.5 hover:border-brand/25 transition-all cursor-default"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-default"
+                  style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
                 >
-                  <span className="text-brand">#</span>
+                  <span style={{ color: 'var(--brand-primary)' }}>#</span>
                   {tag.replace('#', '')}
                 </span>
               ))}
@@ -129,50 +120,47 @@ export default function TrendsTab({ data }: TrendsTabProps) {
           </div>
         </div>
 
-        {/* Right Side: Format & Audio Trends */}
-        <div className="lg:col-span-5 flex flex-col gap-5">
+        <div className="lg:col-span-5 flex flex-col gap-6">
           
-          {/* Format Trends Card */}
           <div className="card flex flex-col">
             <div className="card-header">
-              <TrendingUp className="w-4 h-4 text-green-400" />
-              <h3 className="text-sm font-bold text-primary">Niche Content Trends</h3>
+              <TrendingUp className="w-4 h-4" style={{ color: '#4ade80' }} />
+              <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Niche Content Trends</h3>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3.5">
               {nicheTrends.map((trend, idx) => (
-                <div key={idx} className="flex gap-2.5">
-                  <div className="w-5 h-5 rounded-full bg-brand/10 text-brand border border-brand/15 flex items-center justify-center shrink-0 text-[9px] font-bold mt-0.5">
+                <div key={idx} className="flex gap-3">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', color: 'var(--brand-primary)' }}>
                     {idx + 1}
                   </div>
-                  <p className="text-xs text-primary leading-relaxed">{trend}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{trend}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Audio Trends Card */}
           <div className="card flex flex-col">
             <div className="card-header">
-              <Music className="w-4 h-4 text-purple-400" />
-              <h3 className="text-sm font-bold text-primary">Trending Audio Styles</h3>
+              <Music className="w-4 h-4" style={{ color: 'var(--brand-secondary)' }} />
+              <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Trending Audio Styles</h3>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <div className="p-3 bg-elevated/30 border border-subtle rounded-xl flex items-center justify-between">
+            <div className="flex flex-col gap-3">
+              <div className="p-4 rounded-xl flex items-center justify-between" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                 <div>
-                  <p className="text-xs font-bold text-primary">Upbeat Minimal Synth</p>
-                  <p className="text-[9px] text-muted">Fast-paced tutorial reels</p>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Upbeat Minimal Synth</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Fast-paced tutorial reels</p>
                 </div>
-                <span className="text-[9px] font-bold text-brand uppercase tracking-wider">High Reach</span>
+                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-primary)' }}>High Reach</span>
               </div>
 
-              <div className="p-3 bg-elevated/30 border border-subtle rounded-xl flex items-center justify-between">
+              <div className="p-4 rounded-xl flex items-center justify-between" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                 <div>
-                  <p className="text-xs font-bold text-primary">Lo-Fi Creator Chill</p>
-                  <p className="text-[9px] text-muted">Aesthetic vlogs and BTS</p>
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Lo-Fi Creator Chill</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Aesthetic vlogs and BTS</p>
                 </div>
-                <span className="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Aesthetic</span>
+                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-secondary)' }}>Aesthetic</span>
               </div>
             </div>
           </div>

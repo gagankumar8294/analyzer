@@ -1,16 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { 
-  Clock,
-  Play,
-  Layers,
-  Image as ImageIcon,
-  Download,
-  Edit3,
-  Check,
-  Sparkles
-} from 'lucide-react';
+import { Clock, Play, Layers, Image as ImageIcon, Download, Edit3, Check, Sparkles } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
 import { useAnalysisStore } from '@/store/analysisStore';
 
@@ -55,10 +46,10 @@ export default function CalendarTab({ data }: CalendarTabProps) {
 
   const getFormatColor = (type: string) => {
     switch (type.toUpperCase()) {
-      case 'REEL':     return 'from-pink-500/15 to-rose-500/10 text-pink-400 border-pink-500/20';
-      case 'CAROUSEL': return 'from-purple-500/15 to-violet-500/10 text-purple-400 border-purple-500/20';
-      case 'STORY':    return 'from-blue-500/15 to-cyan-500/10 text-blue-400 border-blue-500/20';
-      default:         return 'from-orange-500/15 to-amber-500/10 text-orange-400 border-orange-500/20';
+      case 'REEL':     return { bg: 'rgba(99,102,241,0.1)', color: 'var(--brand-primary)', border: 'rgba(99,102,241,0.2)' };
+      case 'CAROUSEL': return { bg: 'rgba(139,92,246,0.1)', color: 'var(--brand-secondary)', border: 'rgba(139,92,246,0.2)' };
+      case 'STORY':    return { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: 'rgba(59,130,246,0.2)' };
+      default:         return { bg: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: 'rgba(167,139,250,0.2)' };
     }
   };
 
@@ -152,46 +143,45 @@ export default function CalendarTab({ data }: CalendarTabProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-8 animate-fade-in">
       
-      {/* Header bar */}
-      <div className="card-static rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand/5 to-purple/5 pointer-events-none" />
+      <div className="card-static rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-5 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.04) 0%, rgba(139,92,246,0.03) 100%)' }} />
         <div className="relative">
-          <h2 className="text-base font-extrabold text-primary">90-Day Content Planner</h2>
-          <p className="text-[11px] text-muted max-w-xl mt-0.5">
+          <h2 className="text-lg font-extrabold" style={{ color: 'var(--text-primary)' }}>90-Day Content Planner</h2>
+          <p className="text-sm max-w-xl mt-1" style={{ color: 'var(--text-secondary)' }}>
             Browse, customize, and refine AI-formulated ideas for your posting schedule.
           </p>
         </div>
         
         <button
           onClick={handleExportCSV}
-          className="btn-primary inline-flex items-center gap-2 relative"
+          className="btn btn-primary inline-flex items-center gap-2.5 relative"
         >
-          <Download className="w-3.5 h-3.5" />
+          <Download className="w-4 h-4" />
           Export CSV
         </button>
       </div>
 
-      {/* Filter pills */}
-      <div className="flex p-1 bg-elevated border border-subtle rounded-xl w-fit self-center sm:self-start">
-        {(['ALL', 'REEL', 'CAROUSEL', 'POST', 'STORY'] as const).map(type => (
-          <button
-            key={type}
-            onClick={() => setFilterType(type)}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
-              filterType === type 
-                ? 'bg-brand text-white shadow-sm' 
-                : 'text-muted hover:text-primary'
-            }`}
-          >
-            {type === 'ALL' ? 'All' : type === 'REEL' ? 'Reels' : type === 'CAROUSEL' ? 'Carousels' : type === 'STORY' ? 'Stories' : 'Posts'}
-          </button>
-        ))}
+      <div className="flex p-1.5 rounded-xl max-w-full overflow-x-auto shrink-0 select-none no-scrollbar self-center sm:self-start" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+        <div className="flex gap-1">
+          {(['ALL', 'REEL', 'CAROUSEL', 'POST', 'STORY'] as const).map(type => (
+            <button
+              key={type}
+              onClick={() => setFilterType(type)}
+              className="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer"
+              style={{
+                background: filterType === type ? 'var(--brand-primary)' : 'transparent',
+                color: filterType === type ? '#fff' : 'var(--text-muted)',
+              }}
+            >
+              {type === 'ALL' ? 'All' : type === 'REEL' ? 'Reels' : type === 'CAROUSEL' ? 'Carousels' : type === 'STORY' ? 'Stories' : 'Posts'}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Calendar post items */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         {filteredCalendar.map((item, idx) => {
           const FormatIcon = getFormatIcon(item.contentType);
           const formatColor = getFormatColor(item.contentType);
@@ -203,105 +193,103 @@ export default function CalendarTab({ data }: CalendarTabProps) {
           return (
             <div 
               key={idx} 
-              className={`card-static border rounded-xl transition-all duration-200 ${
-                isExpanded 
-                  ? 'border-brand/25 shadow-[0_0_20px_rgba(225,48,108,0.06)]' 
-                  : 'border-subtle hover:border-default'
-              }`}
+              className="rounded-xl transition-all duration-200"
+              style={{
+                background: 'var(--bg-surface)',
+                border: isExpanded ? '1px solid var(--border-brand)' : '1px solid var(--border-subtle)',
+              }}
             >
-              {/* Header Summary Row */}
               <div 
                 onClick={() => !isEditing && setExpandedIndex(isExpanded ? null : idx)}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer p-4"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 cursor-pointer p-5"
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${formatColor} border flex items-center justify-center shrink-0`}>
-                    <FormatIcon className="w-4 h-4" />
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: formatColor.bg, border: `1px solid ${formatColor.border}` }}>
+                    <FormatIcon className="w-4.5 h-4.5" style={{ color: formatColor.color }} />
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-primary">{item.theme}</span>
-                      <span className="px-1.5 py-0.5 rounded bg-elevated border border-subtle text-[8px] font-bold text-muted uppercase tracking-wider">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{item.theme}</span>
+                      <span className="px-2 py-0.5 rounded text-xs font-bold uppercase" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.05em' }}>
                         {item.contentType}
                       </span>
                     </div>
-                    <p className="text-[11px] text-muted mt-0.5 line-clamp-1">{item.idea}</p>
+                    <p className="text-xs mt-0.5 line-clamp-1" style={{ color: 'var(--text-muted)' }}>{item.idea}</p>
                   </div>
                 </div>
 
-                <span className="text-[10px] text-muted font-bold flex items-center gap-1 self-end sm:self-center">
-                  <Clock className="w-3 h-3 text-brand" />
+                <span className="text-xs font-bold flex items-center gap-1.5 self-end sm:self-center" style={{ color: 'var(--text-muted)' }}>
+                  <Clock className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} />
                   {displayDate}
                 </span>
               </div>
 
-              {/* Expandable Details */}
               {isExpanded && (
-                <div className="border-t border-subtle p-4 flex flex-col gap-4 animate-fade-in">
+                <div className="p-5 flex flex-col gap-5 animate-fade-in" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                   
                   {isEditing ? (
-                    <div className="flex flex-col gap-3.5">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Pillar Theme</label>
+                    <div className="flex flex-col gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Pillar Theme</label>
                           <input type="text" className="input" value={editForm.theme} onChange={e => setEditForm({ ...editForm, theme: e.target.value })} />
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Idea Outline</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Idea Outline</label>
                           <input type="text" className="input" value={editForm.idea} onChange={e => setEditForm({ ...editForm, idea: e.target.value })} />
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1 relative">
+                      <div className="flex flex-col gap-1.5 relative">
                         <div className="flex justify-between items-center">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Hook Text Overlay</label>
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Hook Text Overlay</label>
                           <button type="button" onClick={() => handleAISuggest(idx, 'hook', editForm.hook)}
-                            className="text-[9px] font-bold text-brand hover:underline flex items-center gap-1">
-                            <Sparkles className="w-2.5 h-2.5" /> Improve Hook (AI)
+                            className="text-xs font-bold hover:underline flex items-center gap-1.5" style={{ color: 'var(--brand-primary)' }}>
+                            <Sparkles className="w-3 h-3" /> Improve Hook (AI)
                           </button>
                         </div>
                         <textarea rows={2} className="textarea" value={editForm.hook} onChange={e => setEditForm({ ...editForm, hook: e.target.value })} />
                       </div>
 
-                      <div className="flex flex-col gap-1 relative">
+                      <div className="flex flex-col gap-1.5 relative">
                         <div className="flex justify-between items-center">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Caption Text</label>
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Caption Text</label>
                           <button type="button" onClick={() => handleAISuggest(idx, 'caption', editForm.caption)}
-                            className="text-[9px] font-bold text-brand hover:underline flex items-center gap-1">
-                            <Sparkles className="w-2.5 h-2.5" /> Rewrite Caption (AI)
+                            className="text-xs font-bold hover:underline flex items-center gap-1.5" style={{ color: 'var(--brand-primary)' }}>
+                            <Sparkles className="w-3 h-3" /> Rewrite Caption (AI)
                           </button>
                         </div>
                         <textarea rows={4} className="textarea" value={editForm.caption} onChange={e => setEditForm({ ...editForm, caption: e.target.value })} />
                       </div>
 
                       {item.contentType === 'REEL' && (
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Voiceover Script / Storyboard</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Voiceover Script / Storyboard</label>
                           <textarea rows={3} className="textarea" value={editForm.script} onChange={e => setEditForm({ ...editForm, script: e.target.value })} />
                         </div>
                       )}
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Call To Action</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Call To Action</label>
                           <input type="text" className="input" value={editForm.cta} onChange={e => setEditForm({ ...editForm, cta: e.target.value })} />
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-muted uppercase tracking-wider">Hashtags (comma separated)</label>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Hashtags (comma separated)</label>
                           <input type="text" className="input" value={editForm.hashtagsStr} onChange={e => setEditForm({ ...editForm, hashtagsStr: e.target.value })} />
                         </div>
                       </div>
 
                       {suggestingIndex === idx && suggestions.length > 0 && (
-                        <div className="p-3 rounded-xl bg-purple-500/[0.04] border border-purple-500/15 flex flex-col gap-2.5">
-                          <span className="text-[9px] font-bold text-purple-400 uppercase tracking-widest flex items-center gap-1">
-                            <Sparkles className="w-3 h-3" /> AI Suggestions
+                        <div className="p-4 rounded-xl flex flex-col gap-3" style={{ background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.15)' }}>
+                          <span className="text-xs font-bold uppercase tracking-widest flex items-center gap-1.5" style={{ color: 'var(--brand-secondary)' }}>
+                            <Sparkles className="w-3.5 h-3.5" /> AI Suggestions
                           </span>
-                          <div className="flex flex-col gap-1.5">
+                          <div className="flex flex-col gap-2">
                             {suggestions.map((sug, sIdx) => (
                               <button key={sIdx} type="button" onClick={() => applySuggestion(sug)}
-                                className="p-2.5 rounded-lg border border-subtle bg-elevated/40 text-left text-[11px] text-primary hover:border-brand/30 transition-colors">
+                                className="p-3 rounded-xl text-left text-xs transition-colors" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
                                 {sug}
                               </button>
                             ))}
@@ -309,56 +297,56 @@ export default function CalendarTab({ data }: CalendarTabProps) {
                         </div>
                       )}
 
-                      <div className="flex justify-end gap-2 border-t border-subtle pt-3">
-                        <button onClick={() => setEditingIndex(null)} className="px-3 py-1.5 rounded-lg text-[11px] font-bold text-muted hover:text-primary transition-colors">
+                      <div className="flex justify-end gap-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <button onClick={() => setEditingIndex(null)} className="px-4 py-2 rounded-xl text-xs font-bold transition-colors" style={{ color: 'var(--text-muted)' }}>
                           Cancel
                         </button>
-                        <button onClick={() => handleSaveEdit(idx)} className="btn-primary btn-sm inline-flex items-center gap-1.5">
+                        <button onClick={() => handleSaveEdit(idx)} className="btn btn-primary btn-sm inline-flex items-center gap-1.5">
                           <Check className="w-3.5 h-3.5" /> Save Changes
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-3.5">
+                    <div className="flex flex-col gap-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1.5 bg-elevated/30 p-3 rounded-xl border border-subtle">
-                          <span className="text-[9px] font-bold text-brand uppercase tracking-wider">Hook text overlay</span>
-                          <p className="text-xs font-bold text-primary leading-relaxed">&ldquo;{item.hook}&rdquo;</p>
+                        <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-primary)', fontSize: '0.65rem' }}>Hook text overlay</span>
+                          <p className="text-sm font-bold leading-relaxed" style={{ color: 'var(--text-primary)' }}>&ldquo;{item.hook}&rdquo;</p>
                         </div>
-                        <div className="flex flex-col gap-1.5 bg-elevated/30 p-3 rounded-xl border border-subtle">
-                          <span className="text-[9px] font-bold text-purple-400 uppercase tracking-wider">Call to Action</span>
-                          <p className="text-xs font-bold text-primary leading-relaxed">{item.cta}</p>
+                        <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-secondary)', fontSize: '0.65rem' }}>Call to Action</span>
+                          <p className="text-sm font-bold leading-relaxed" style={{ color: 'var(--text-primary)' }}>{item.cta}</p>
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Caption Text</span>
-                        <p className="text-xs text-primary leading-relaxed bg-elevated/30 p-3 rounded-xl border border-subtle whitespace-pre-line">
+                      <div className="flex flex-col gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Caption Text</span>
+                        <p className="text-sm leading-relaxed p-4 rounded-xl whitespace-pre-line" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                           {item.caption}
                         </p>
                       </div>
 
                       {item.contentType === 'REEL' && item.script && (
-                        <div className="flex flex-col gap-1.5">
-                          <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Video Script / Storyboard</span>
-                          <div className="text-xs text-primary leading-relaxed bg-elevated/30 p-3 rounded-xl border border-subtle whitespace-pre-line">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Video Script / Storyboard</span>
+                          <div className="text-sm leading-relaxed p-4 rounded-xl whitespace-pre-line" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                             {item.script}
                           </div>
                         </div>
                       )}
 
-                      <div className="flex flex-wrap gap-1.5 pt-1">
+                      <div className="flex flex-wrap gap-2 pt-1">
                         {item.hashtags.map((tag: string, tIdx: number) => (
-                          <span key={tIdx} className="px-2 py-0.5 rounded bg-elevated border border-subtle text-[9px] font-semibold text-brand">
+                          <span key={tIdx} className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)' }}>
                             {tag}
                           </span>
                         ))}
                       </div>
 
-                      <div className="flex justify-end border-t border-subtle pt-2.5">
+                      <div className="flex justify-end pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <button onClick={() => handleStartEdit(idx, item)}
-                          className="px-3 py-1.5 rounded-lg border border-subtle bg-elevated/20 text-[11px] font-bold text-primary hover:border-brand/30 transition-colors inline-flex items-center gap-1.5">
-                          <Edit3 className="w-3.5 h-3.5 text-brand" /> Edit Post
+                          className="px-4 py-2 rounded-xl text-xs font-bold transition-colors inline-flex items-center gap-1.5" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
+                          <Edit3 className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} /> Edit Post
                         </button>
                       </div>
                     </div>

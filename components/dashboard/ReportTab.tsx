@@ -46,20 +46,18 @@ export default function ReportTab({ data }: Props) {
   );
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
+    <div className="flex flex-col gap-8 animate-fade-in">
 
-      {/* Download CTA card */}
-      <div className="card-brand rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-5 relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-48 h-48 bg-brand/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="flex flex-col gap-2 flex-1 relative">
-          <h2 className="text-lg font-extrabold text-primary">Download Full PDF Report</h2>
-          <p className="text-xs text-muted leading-relaxed max-w-lg">
+      <div className="card-brand rounded-2xl p-8 flex flex-col sm:flex-row items-center gap-6 relative overflow-hidden">
+        <div className="flex flex-col gap-3 flex-1 relative">
+          <h2 className="text-xl font-extrabold" style={{ color: 'var(--text-primary)' }}>Download Full PDF Report</h2>
+          <p className="text-sm leading-relaxed max-w-lg" style={{ color: 'var(--text-secondary)' }}>
             A complete branded report including profile overview, performance scores, AI insights, competitor analysis, and 90-day content plan.
           </p>
-          <ul className="flex flex-wrap gap-1.5 mt-1">
+          <ul className="flex flex-wrap gap-2 mt-1">
             {['Profile Summary', 'Score Cards', 'SWOT Analysis', 'Competitors', '90-Day Plan', 'AI Recommendations'].map(item => (
-              <li key={item} className="flex items-center gap-1 text-[10px] font-semibold text-primary/80 bg-elevated/50 border border-subtle px-2 py-0.5 rounded-full">
-                <CheckCircle2 className="w-2.5 h-2.5 text-green-400" />{item}
+              <li key={item} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}>
+                <CheckCircle2 className="w-3 h-3" style={{ color: '#4ade80' }} />{item}
               </li>
             ))}
           </ul>
@@ -67,7 +65,8 @@ export default function ReportTab({ data }: Props) {
         <button
           onClick={handleDownload}
           disabled={downloading}
-          className="flex items-center gap-2 px-7 py-3.5 bg-brand-gradient text-white font-bold text-sm rounded-xl shadow-brand hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 relative"
+          className="flex items-center gap-2.5 px-8 py-4 font-bold text-sm rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 relative"
+          style={{ background: 'var(--gradient-brand)', color: '#fff', boxShadow: 'var(--shadow-brand)' }}
         >
           {downloading ? (
             <><Loader2 className="w-4 h-4 animate-spin" />Generating...</>
@@ -79,71 +78,68 @@ export default function ReportTab({ data }: Props) {
         </button>
       </div>
 
-      {/* Preview */}
       <div className="card flex flex-col">
         <div className="card-header">
-          <Eye className="w-4 h-4 text-brand" />
-          <h3 className="text-sm font-bold text-primary">Report Preview</h3>
+          <Eye className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+          <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Report Preview</h3>
         </div>
 
-        {/* Page 1 */}
-        <div className="flex flex-col gap-2.5 mb-5">
-          <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Page 1 — Profile Overview</span>
-          <div className="p-4 rounded-xl bg-elevated/30 border border-subtle flex flex-col sm:flex-row gap-5">
-            <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 mb-6">
+          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Page 1 — Profile Overview</span>
+          <div className="p-5 rounded-xl flex flex-col sm:flex-row gap-6" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+            <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={profile.profilePicUrl || '/placeholder-avatar.png'} alt={profile.username}
-                className="w-14 h-14 rounded-xl object-cover ring-2 ring-brand/20"
+                className="w-14 h-14 rounded-xl object-cover"
+                style={{ border: '2px solid var(--border-default)' }}
                 onError={e => { (e.target as HTMLImageElement).src = '/placeholder-avatar.png'; }}
               />
               <div>
-                <p className="font-bold text-primary text-sm">{profile.fullName}</p>
-                <p className="text-[10px] text-muted">@{profile.username}</p>
-                {profile.category && <p className="text-[10px] text-brand font-semibold mt-0.5">{profile.category}</p>}
+                <p className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{profile.fullName}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>@{profile.username}</p>
+                {profile.category && <p className="text-xs font-semibold mt-0.5" style={{ color: 'var(--brand-primary)' }}>{profile.category}</p>}
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
               {[
                 { l: 'Followers',  v: formatCount(profile.followers) },
                 { l: 'Posts',      v: profile.totalPosts },
                 { l: 'Eng. Rate',  v: `${er}%` },
                 { l: 'Score',      v: `${overallScore}/100` },
               ].map(s => (
-                <div key={s.l} className="p-2.5 rounded-lg bg-surface border border-subtle text-center">
-                  <p className="text-sm font-extrabold text-primary">{s.v}</p>
-                  <p className="text-[9px] text-muted">{s.l}</p>
+                <div key={s.l} className="p-3 rounded-xl text-center" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+                  <p className="text-sm font-extrabold" style={{ color: 'var(--text-primary)' }}>{s.v}</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.l}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Page 2 — AI Insights */}
-        <div className="flex flex-col gap-2.5 mb-5">
-          <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Page 2 — AI Insights</span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="flex flex-col gap-3 mb-6">
+          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Page 2 — AI Insights</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { label: 'Top Strength', value: insights?.strengths?.[0], color: 'text-green-400 border-green-500/15 bg-green-500/[0.04]' },
-              { label: 'Key Opportunity', value: insights?.opportunities?.[0], color: 'text-blue-400 border-blue-500/15 bg-blue-500/[0.04]' },
+              { label: 'Top Strength', value: insights?.strengths?.[0], color: '#22c55e' },
+              { label: 'Key Opportunity', value: insights?.opportunities?.[0], color: '#3b82f6' },
             ].map(item => item.value && (
-              <div key={item.label} className={`p-3 rounded-xl border ${item.color}`}>
-                <p className={`text-[9px] font-bold uppercase tracking-wider mb-1 ${item.color.split(' ')[0]}`}>{item.label}</p>
-                <p className="text-[11px] text-primary leading-relaxed">{item.value}</p>
+              <div key={item.label} className="p-4 rounded-xl" style={{ border: `1px solid ${item.color}25`, background: `${item.color}05` }}>
+                <p className="text-xs font-bold uppercase tracking-wider mb-1.5" style={{ color: item.color, fontSize: '0.65rem' }}>{item.label}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>{item.value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Page 3 — Content Plan hint */}
         {data.calendar && data.calendar.length > 0 && (
-          <div className="flex flex-col gap-2.5">
-            <span className="text-[9px] font-bold text-muted uppercase tracking-wider">Page 3 — 90-Day Content Plan (sample)</span>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div className="flex flex-col gap-3">
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Page 3 — 90-Day Content Plan (sample)</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {data.calendar.slice(0, 3).map((entry, i) => (
-                <div key={i} className="p-3 rounded-xl bg-elevated/30 border border-subtle">
-                  <p className="text-[9px] font-bold text-brand mb-1">{entry.week ?? `Day ${i + 1}`}</p>
-                  <p className="text-[11px] font-semibold text-primary">{entry.theme}</p>
-                  <p className="text-[9px] text-muted mt-0.5">{entry.contentType}</p>
+                <div key={i} className="p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                  <p className="text-xs font-bold mb-1" style={{ color: 'var(--brand-primary)', fontSize: '0.65rem' }}>{entry.week ?? `Day ${i + 1}`}</p>
+                  <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{entry.theme}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{entry.contentType}</p>
                 </div>
               ))}
             </div>
