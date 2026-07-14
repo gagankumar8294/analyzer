@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { Hash, Image as ImageIcon, Film, Layers, MessageSquare, BarChart3 } from 'lucide-react';
+import { Hash, Image as ImageIcon, Film, Layers, MessageSquare, BarChart3, Heart } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
 import { formatCount } from '@/lib/utils/engagement';
 
@@ -144,28 +144,61 @@ export default function ContentTab({ data }: Props) {
             <span className="text-xs" style={{ color: 'var(--text-muted)' }}>By engagement</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {topPosts.map((post, i) => (
-              <div key={post.id} className="p-4 rounded-xl flex flex-col gap-2.5 transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{post.type}</span>
-                  <span className="w-6 h-6 rounded-full text-xs font-extrabold flex items-center justify-center" style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--brand-primary)' }}>#{i + 1}</span>
+            {topPosts.map((post, i) => {
+              const isMock = post.id.startsWith('mock_');
+              const postUrl = !isMock && post.shortCode ? `https://www.instagram.com/p/${post.shortCode}/` : null;
+
+              return (
+                <div key={post.id} className="card-static p-4 sm:p-5 rounded-2xl flex flex-col gap-3 transition-all hover:scale-[1.01] duration-200" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                  <div className="flex items-center justify-between">
+                    <span className="badge badge-brand text-[9px] tracking-widest font-bold uppercase">{post.type}</span>
+                    <span className="w-6 h-6 rounded-full text-xs font-extrabold flex items-center justify-center" style={{ background: 'var(--gradient-brand-soft)', border: '1px solid var(--border-brand)', color: 'var(--brand-primary)' }}>#{i + 1}</span>
+                  </div>
+                  
+                  {/* Scrollable caption container */}
+                  <div className="max-h-[120px] overflow-y-auto pr-1 flex-1 custom-scrollbar">
+                    <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+                      {post.caption || <span className="italic opacity-50">(no caption)</span>}
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3 mt-auto pt-3.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 text-xs font-bold" style={{ color: 'var(--text-primary)' }}>
+                          <Heart className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} />
+                          <span>{formatCount(post.likes)}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-xs font-bold" style={{ color: 'var(--text-primary)' }}>
+                          <MessageSquare className="w-3.5 h-3.5" style={{ color: 'var(--brand-secondary)' }} />
+                          <span>{formatCount(post.comments)}</span>
+                        </div>
+                      </div>
+                      
+                      <span className="text-[10px] sm:text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+                        {new Date(post.timestamp).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+
+                    {/* Link to Instagram post if live API data */}
+                    {postUrl && (
+                      <a 
+                        href={postUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-bold self-start mt-0.5 transition-all hover:opacity-80"
+                        style={{ color: 'var(--brand-primary)' }}
+                      >
+                        <span>View on Instagram</span>
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <p className="text-sm line-clamp-2 leading-relaxed min-h-[32px]" style={{ color: 'var(--text-primary)' }}>
-                  {post.caption || '(no caption)'}
-                </p>
-                <div className="flex items-center gap-4 mt-auto pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                  <span className="text-xs font-bold flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
-                    {formatCount(post.likes)} likes
-                  </span>
-                  <span className="text-xs font-bold flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
-                    {formatCount(post.comments)} comments
-                  </span>
-                  <span className="ml-auto text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {new Date(post.timestamp).toLocaleDateString('en', { month: 'short', day: 'numeric' })}
-                  </span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
