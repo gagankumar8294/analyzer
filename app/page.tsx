@@ -29,10 +29,9 @@ export default function LandingPage() {
     const raw = input.trim().replace(/^@/, '').replace(/.*instagram\.com\//, '').split('/')[0].split('?')[0];
     if (!raw) { setInputError('Enter a username or Instagram URL'); return; }
     if (!/^[a-zA-Z0-9._]{1,30}$/.test(raw)) { setInputError('Invalid Instagram username format'); return; }
-    try {
-      const res = await analyze(raw);
-      if (res?.profile?.username) router.push(`/analyze/${res.profile.username}`);
-    } catch { /* error shown via store */ }
+    
+    // Redirect immediately to the dashboard page to let it handle loading
+    router.push(`/analyze/${raw}`);
   };
 
   const handleZipUpload = async (file: File) => {

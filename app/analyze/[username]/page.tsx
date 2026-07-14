@@ -7,6 +7,7 @@ import { useAnalysisStore } from '@/store/analysisStore';
 import { useAnalysis } from '@/hooks/useAnalysis';
 import ErrorPanel from '@/components/ui/ErrorPanel';
 import { OverviewSkeleton, ContentSkeleton, GeneralSkeleton } from '@/components/ui/Loader';
+import ProgressOverlay from '@/components/ui/ProgressOverlay';
 
 // Lazy-load all tabs
 const OverviewTab    = dynamic(() => import('@/components/dashboard/OverviewTab'),    { loading: () => <OverviewSkeleton /> });
@@ -72,5 +73,13 @@ export default function AnalyzePage({ params }: Props) {
     return <OverviewSkeleton />;
   };
 
-  return <DashboardShell>{renderContent()}</DashboardShell>;
+  return (
+    <>
+      <DashboardShell>{renderContent()}</DashboardShell>
+      <ProgressOverlay
+        isVisible={status === 'loading'}
+        username={username}
+      />
+    </>
+  );
 }
