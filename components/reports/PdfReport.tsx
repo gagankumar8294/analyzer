@@ -84,8 +84,8 @@ export function PdfReport({ data }: { data: AnalysisResult }) {
   const { profile, scores, posts, insights, competitors, calendar } = data;
 
   const totalEng = posts.reduce((s, p) => s + p.likes + p.comments, 0);
-  const avgEng   = posts.length ? totalEng / posts.length : 0;
-  const er       = profile.followers > 0 ? ((avgEng / profile.followers) * 100).toFixed(2) : '0.00';
+  const avgEng = posts.length ? totalEng / posts.length : 0;
+  const er = profile.followers > 0 ? ((avgEng / profile.followers) * 100).toFixed(2) : '0.00';
   const overallScore = Math.round(
     [scores.engagement, scores.branding, scores.seo, scores.postingConsistency]
       .reduce((a, b) => a + (b ?? 0), 0) / 4
@@ -115,11 +115,11 @@ export function PdfReport({ data }: { data: AnalysisResult }) {
         <Text style={S.sectionTitle}>Performance Scores</Text>
         <View style={S.scoreRow}>
           {[
-            { label: 'Engagement',   value: scores.engagement         ?? 0 },
-            { label: 'Branding',     value: scores.branding           ?? 0 },
-            { label: 'SEO & Tags',   value: scores.seo                ?? 0 },
-            { label: 'Consistency',  value: scores.postingConsistency ?? 0 },
-            { label: 'Growth',       value: scores.growth             ?? scores.engagement ?? 0 },
+            { label: 'Engagement', value: scores.engagement ?? 0 },
+            { label: 'Branding', value: scores.branding ?? 0 },
+            { label: 'SEO & Tags', value: scores.seo ?? 0 },
+            { label: 'Consistency', value: scores.postingConsistency ?? 0 },
+            { label: 'Growth', value: scores.growth ?? scores.engagement ?? 0 },
           ].map(s => (
             <View key={s.label} style={S.scoreCard}>
               <Text style={S.scoreVal}>{s.value}%</Text>
@@ -143,10 +143,10 @@ export function PdfReport({ data }: { data: AnalysisResult }) {
         <Text style={S.sectionTitle}>SWOT Analysis</Text>
         <View style={S.swotGrid}>
           {[
-            { title: 'Strengths',     color: '#4ADE80', items: insights?.strengths     ?? [] },
-            { title: 'Weaknesses',    color: '#FCD34D', items: insights?.weaknesses    ?? [] },
+            { title: 'Strengths', color: '#4ADE80', items: insights?.strengths ?? [] },
+            { title: 'Weaknesses', color: '#FCD34D', items: insights?.weaknesses ?? [] },
             { title: 'Opportunities', color: '#60A5FA', items: insights?.opportunities ?? [] },
-            { title: 'Threats',       color: '#F87171', items: insights?.threats       ?? [] },
+            { title: 'Threats', color: '#F87171', items: insights?.threats ?? [] },
           ].map(section => (
             <View key={section.title} style={S.swotCard}>
               <Text style={[S.swotTitle, { color: section.color }]}>{section.title}</Text>

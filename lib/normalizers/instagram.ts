@@ -23,23 +23,23 @@ export function normalizeProfile(rawData: any, source: 'api' | 'zip'): Instagram
     };
   }
 
-  // RapidAPI (JoTucker / Meta Graph response)
+  // RapidAPI (JoTucker / Meta Graph response) or already normalized input
   const id = String(rawData.id || rawData.pk || '');
   const username = rawData.username || '';
-  const fullName = rawData.full_name || rawData.fullName || username;
+  const fullName = rawData.full_name || rawData.fullName || rawData.name || username;
   
-  // JoTucker places bio under biography or biography_with_entities.raw_text
-  const bio = rawData.biography || rawData.biography_with_entities?.raw_text || '';
+  // Support biography, biography_with_entities, or bio
+  const bio = rawData.biography || rawData.bio || rawData.biography_with_entities?.raw_text || '';
   
   // Extract cover image
-  const profilePicUrl = rawData.profile_pic_url_hd || rawData.profile_pic_url || '';
+  const profilePicUrl = rawData.profilePicUrl || rawData.profile_pic_url_hd || rawData.profile_pic_url || '';
   
-  const followers = Number(rawData.follower_count ?? rawData.followers ?? 0);
-  const following = Number(rawData.following_count ?? rawData.following ?? 0);
-  const totalPosts = Number(rawData.media_count ?? rawData.posts_count ?? 0);
-  const isVerified = Boolean(rawData.is_verified || false);
-  const externalUrl = rawData.external_url || rawData.website || null;
-  const category = rawData.category_name || rawData.category || null;
+  const followers = Number(rawData.follower_count ?? rawData.followersCount ?? rawData.followers ?? 0);
+  const following = Number(rawData.following_count ?? rawData.followingCount ?? rawData.following ?? 0);
+  const totalPosts = Number(rawData.media_count ?? rawData.posts_count ?? rawData.postsCount ?? rawData.totalPosts ?? 0);
+  const isVerified = Boolean(rawData.is_verified || rawData.isVerified || rawData.verified || false);
+  const externalUrl = rawData.external_url || rawData.externalUrl || rawData.website || null;
+  const category = rawData.category_name || rawData.category || rawData.businessCategoryName || null;
 
   return {
     id,
@@ -53,7 +53,7 @@ export function normalizeProfile(rawData: any, source: 'api' | 'zip'): Instagram
     isVerified,
     externalUrl,
     category,
-    highlights: []
+    highlights: rawData.highlights || []
   };
 }
 
