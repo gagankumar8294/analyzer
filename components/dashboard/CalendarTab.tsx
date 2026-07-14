@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Clock, Play, Layers, Image as ImageIcon, Download, Edit3, Check, Sparkles } from 'lucide-react';
+import { Clock, Play, Layers, Image as ImageIcon, Download, Edit3, Check, Sparkles, ChevronDown, ArrowRight, FileText } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
 import { useAnalysisStore } from '@/store/analysisStore';
 
@@ -163,21 +163,28 @@ export default function CalendarTab({ data }: CalendarTabProps) {
         </button>
       </div>
 
-      <div className="flex p-1.5 rounded-xl max-w-full overflow-x-auto shrink-0 select-none no-scrollbar self-center sm:self-start" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
-        <div className="flex gap-1">
-          {(['ALL', 'REEL', 'CAROUSEL', 'POST', 'STORY'] as const).map(type => (
-            <button
-              key={type}
-              onClick={() => setFilterType(type)}
-              className="px-3 sm:px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer"
-              style={{
-                background: filterType === type ? 'var(--brand-primary)' : 'transparent',
-                color: filterType === type ? '#fff' : 'var(--text-muted)',
-              }}
-            >
-              {type === 'ALL' ? 'All' : type === 'REEL' ? 'Reels' : type === 'CAROUSEL' ? 'Carousels' : type === 'STORY' ? 'Stories' : 'Posts'}
-            </button>
-          ))}
+      <div 
+        className="flex p-1 rounded-2xl max-w-full overflow-x-auto shrink-0 select-none no-scrollbar self-center sm:self-start shadow-sm" 
+        style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}
+      >
+        <div className="flex gap-1.5 p-0.5">
+          {(['ALL', 'REEL', 'CAROUSEL', 'POST', 'STORY'] as const).map(type => {
+            const isSelected = filterType === type;
+            return (
+              <button
+                key={type}
+                onClick={() => setFilterType(type)}
+                className="px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 shrink-0 cursor-pointer flex items-center gap-1.5"
+                style={{
+                  background: isSelected ? 'var(--gradient-brand)' : 'transparent',
+                  color: isSelected ? '#fff' : 'var(--text-secondary)',
+                  boxShadow: isSelected ? 'var(--shadow-sm)' : 'none',
+                }}
+              >
+                {type === 'ALL' ? 'All Formats' : type === 'REEL' ? 'Reels' : type === 'CAROUSEL' ? 'Carousels' : type === 'STORY' ? 'Stories' : 'Posts'}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -193,40 +200,50 @@ export default function CalendarTab({ data }: CalendarTabProps) {
           return (
             <div 
               key={idx} 
-              className="rounded-xl transition-all duration-200"
+              className="rounded-2xl transition-all duration-300 shadow-sm"
               style={{
                 background: 'var(--bg-surface)',
-                border: isExpanded ? '1px solid var(--border-brand)' : '1px solid var(--border-subtle)',
+                border: isExpanded ? '1px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
+                boxShadow: isExpanded ? '0 8px 24px rgba(99,102,241,0.06)' : 'var(--shadow-sm)',
+                transform: !isExpanded ? 'none' : 'scale-[1.002]',
               }}
             >
               <div 
                 onClick={() => !isEditing && setExpandedIndex(isExpanded ? null : idx)}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 cursor-pointer p-5"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer p-5 sm:p-6 select-none"
               >
-                <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: formatColor.bg, border: `1px solid ${formatColor.border}` }}>
-                    <FormatIcon className="w-4.5 h-4.5" style={{ color: formatColor.color }} />
+                <div className="flex items-center gap-4">
+                  <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-all" style={{ background: formatColor.bg, border: `1px solid ${formatColor.border}` }}>
+                    <FormatIcon className="w-5 h-5" style={{ color: formatColor.color }} />
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-2.5">
-                      <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{item.theme}</span>
-                      <span className="px-2 py-0.5 rounded text-xs font-bold uppercase" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)', fontSize: '0.6rem', letterSpacing: '0.05em' }}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm sm:text-base font-extrabold" style={{ color: 'var(--text-primary)' }}>{item.theme}</span>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider" style={{ background: formatColor.bg, border: `1px solid ${formatColor.border}`, color: formatColor.color }}>
                         {item.contentType}
                       </span>
                     </div>
-                    <p className="text-xs mt-0.5 line-clamp-1" style={{ color: 'var(--text-muted)' }}>{item.idea}</p>
+                    <p className="text-xs sm:text-sm mt-1 line-clamp-1" style={{ color: 'var(--text-secondary)' }}>{item.idea}</p>
                   </div>
                 </div>
 
-                <span className="text-xs font-bold flex items-center gap-1.5 self-end sm:self-center" style={{ color: 'var(--text-muted)' }}>
-                  <Clock className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} />
-                  {displayDate}
-                </span>
+                <div className="flex items-center justify-between sm:justify-end gap-4 self-stretch sm:self-center">
+                  <span className="text-xs font-bold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+                    <Clock className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} />
+                    {displayDate}
+                  </span>
+                  {!isEditing && (
+                    <ChevronDown 
+                      className={`w-4 h-4 transition-transform duration-300 shrink-0 ${isExpanded ? 'rotate-180' : ''}`} 
+                      style={{ color: isExpanded ? 'var(--brand-primary)' : 'var(--text-muted)' }}
+                    />
+                  )}
+                </div>
               </div>
 
               {isExpanded && (
-                <div className="p-5 flex flex-col gap-5 animate-fade-in" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <div className="p-5 sm:p-6 flex flex-col gap-5 animate-fade-in" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                   
                   {isEditing ? (
                     <div className="flex flex-col gap-4">
@@ -289,7 +306,7 @@ export default function CalendarTab({ data }: CalendarTabProps) {
                           <div className="flex flex-col gap-2">
                             {suggestions.map((sug, sIdx) => (
                               <button key={sIdx} type="button" onClick={() => applySuggestion(sug)}
-                                className="p-3 rounded-xl text-left text-xs transition-colors" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
+                                className="p-3 rounded-xl text-left text-xs transition-colors cursor-pointer" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
                                 {sug}
                               </button>
                             ))}
@@ -298,7 +315,7 @@ export default function CalendarTab({ data }: CalendarTabProps) {
                       )}
 
                       <div className="flex justify-end gap-3 pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                        <button onClick={() => setEditingIndex(null)} className="px-4 py-2 rounded-xl text-xs font-bold transition-colors" style={{ color: 'var(--text-muted)' }}>
+                        <button onClick={() => setEditingIndex(null)} className="px-4 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}>
                           Cancel
                         </button>
                         <button onClick={() => handleSaveEdit(idx)} className="btn btn-primary btn-sm inline-flex items-center gap-1.5">
@@ -307,29 +324,37 @@ export default function CalendarTab({ data }: CalendarTabProps) {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
-                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-primary)', fontSize: '0.65rem' }}>Hook text overlay</span>
-                          <p className="text-sm font-bold leading-relaxed" style={{ color: 'var(--text-primary)' }}>&ldquo;{item.hook}&rdquo;</p>
+                        <div className="flex flex-col gap-3 p-5 sm:p-6 rounded-2xl transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-2" style={{ color: 'var(--brand-primary)' }}>
+                            <Sparkles className="w-3.5 h-3.5" /> Hook Text Overlay
+                          </span>
+                          <p className="text-sm font-extrabold leading-relaxed" style={{ color: 'var(--text-primary)' }}>&ldquo;{item.hook}&rdquo;</p>
                         </div>
-                        <div className="flex flex-col gap-2 p-4 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
-                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--brand-secondary)', fontSize: '0.65rem' }}>Call to Action</span>
-                          <p className="text-sm font-bold leading-relaxed" style={{ color: 'var(--text-primary)' }}>{item.cta}</p>
+                        <div className="flex flex-col gap-3 p-5 sm:p-6 rounded-2xl transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-2" style={{ color: 'var(--brand-secondary)' }}>
+                            <ArrowRight className="w-3.5 h-3.5" /> Call to Action (CTA)
+                          </span>
+                          <p className="text-sm font-extrabold leading-relaxed" style={{ color: 'var(--text-primary)' }}>{item.cta}</p>
                         </div>
                       </div>
 
-                      <div className="flex flex-col gap-2">
-                        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Caption Text</span>
-                        <p className="text-sm leading-relaxed p-4 rounded-xl whitespace-pre-line" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                      <div className="flex flex-col gap-2.5">
+                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-2 px-1" style={{ color: 'var(--text-muted)' }}>
+                          <FileText className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} /> Caption Copy
+                        </span>
+                        <p className="text-sm leading-relaxed p-5 sm:p-6 rounded-2xl whitespace-pre-wrap" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                           {item.caption}
                         </p>
                       </div>
 
                       {item.contentType === 'REEL' && item.script && (
-                        <div className="flex flex-col gap-2">
-                          <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>Video Script / Storyboard</span>
-                          <div className="text-sm leading-relaxed p-4 rounded-xl whitespace-pre-line" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+                        <div className="flex flex-col gap-2.5">
+                          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-2 px-1" style={{ color: 'var(--text-muted)' }}>
+                            <Play className="w-3.5 h-3.5" style={{ color: 'var(--brand-secondary)' }} /> Video Script / Storyboard
+                          </span>
+                          <div className="text-sm leading-relaxed p-5 sm:p-6 rounded-2xl whitespace-pre-wrap" style={{ color: 'var(--text-primary)', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
                             {item.script}
                           </div>
                         </div>
@@ -337,7 +362,7 @@ export default function CalendarTab({ data }: CalendarTabProps) {
 
                       <div className="flex flex-wrap gap-2 pt-1">
                         {item.hashtags.map((tag: string, tIdx: number) => (
-                          <span key={tIdx} className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)' }}>
+                          <span key={tIdx} className="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all hover:opacity-80" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)', color: 'var(--brand-primary)' }}>
                             {tag}
                           </span>
                         ))}
@@ -345,7 +370,7 @@ export default function CalendarTab({ data }: CalendarTabProps) {
 
                       <div className="flex justify-end pt-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <button onClick={() => handleStartEdit(idx, item)}
-                          className="px-4 py-2 rounded-xl text-xs font-bold transition-colors inline-flex items-center gap-1.5" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
+                          className="px-4 py-2.5 rounded-xl text-xs font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer hover:bg-[var(--bg-hover)]" style={{ border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
                           <Edit3 className="w-3.5 h-3.5" style={{ color: 'var(--brand-primary)' }} /> Edit Post
                         </button>
                       </div>
