@@ -34,10 +34,55 @@ const ZIP_STEPS: Step[] = [
   { id: 6, label: 'Building your personalized action plan...', tip: 'Generating a 90-day content calendar and growth roadmap', duration: 3000 },
 ];
 
+const API_ANALYZING_MESSAGES = [
+  "🚀 Initializing secure connection to public Instagram nodes...",
+  "🔍 Fetching bio details, follower counts, and verification status...",
+  "📊 Downloading recent post metadata & calculating engagement rates...",
+  "🤖 Feeding raw profile metrics to Gemini AI strategy models...",
+  "💡 Running competitor mapping and detecting market gaps...",
+  "📈 Analyzing post frequency, peak engagement hours, and content formats...",
+  "📅 Formulating a customized 90-day action plan and content pillars...",
+  "🎨 Rendering charts, statistics, and generating PDF download bundle...",
+  "✨ Almost there! Polishing final details and assembling your report..."
+];
+
+const ZIP_ANALYZING_MESSAGES = [
+  "📁 Unzipping and mounting your uploaded Instagram archive locally...",
+  "🔍 Verifying directory structure and parsing JSON file feeds...",
+  "📊 Compiling posting history, likes, and message frequencies...",
+  "🤖 Forwarding localized performance data to Gemini AI models...",
+  "💡 Structuring niche opportunities and personalized brand analysis...",
+  "📈 Pinpointing top-performing days, engagement trends, and growth loops...",
+  "📅 Drafting a bespoke 90-day content calendar based on your past posts...",
+  "🎨 Setting up dashboard widgets and generating downloadable PDF report...",
+  "✨ Wrapping up! Preparing your comprehensive analytics dashboard..."
+];
+
 export default function ProgressOverlay({ isVisible, username, isZipMode = false }: ProgressOverlayProps) {
   const steps = isZipMode ? ZIP_STEPS : API_STEPS;
+  const analyzingMessages = isZipMode ? ZIP_ANALYZING_MESSAGES : API_ANALYZING_MESSAGES;
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    if (!isVisible) {
+      setMessageIndex(0);
+      setFade(true);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setMessageIndex((prev) => (prev + 1) % analyzingMessages.length);
+        setFade(true);
+      }, 300); // matches transition duration
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isVisible, analyzingMessages]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -118,9 +163,17 @@ export default function ProgressOverlay({ isVisible, username, isZipMode = false
         {/* Text */}
         <div className="flex flex-col gap-3">
           <h3 className="text-2xl font-extrabold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Analyzing @{username}
+            {isZipMode ? 'Analyzing Uploaded Archive' : `Analyzing @${username}`}
           </h3>
-          <p className="text-sm leading-relaxed max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
+          <div className="h-12 flex items-center justify-center">
+            <p 
+              className={`text-sm leading-relaxed max-w-md mx-auto font-semibold transition-all duration-300 ${fade ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-1 scale-95'}`}
+              style={{ color: 'var(--brand-accent)' }}
+            >
+              {analyzingMessages[messageIndex]}
+            </p>
+          </div>
+          <p className="text-xs leading-relaxed max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>
             This takes about 15-20 seconds. Gemini AI is generating your comprehensive Instagram growth report.
           </p>
         </div>

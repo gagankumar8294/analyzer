@@ -114,8 +114,8 @@ export default function LandingPage() {
 
           {/* Search Form */}
           <div className="w-full flex flex-col gap-3">
-            <form onSubmit={handleSubmit} className="relative w-full">
-              <div className="relative flex items-center group">
+            <form onSubmit={handleSubmit} className="w-full flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1 group">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors z-10" style={{ color: 'var(--text-muted)' }}>
                   <Search className="w-5 h-5 group-focus-within:text-[var(--brand-primary)]" />
                 </div>
@@ -131,32 +131,36 @@ export default function LandingPage() {
                     border: '1px solid var(--border-default)',
                     color: 'var(--text-primary)',
                     paddingLeft: '48px',
-                    paddingRight: '140px',
+                    paddingRight: '16px',
                   }}
                 />
-                <button
-                  type="submit"
-                  disabled={isLoading || !input.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-6 rounded-xl text-white font-bold text-xs transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2"
-                  style={{ background: 'var(--gradient-brand)', boxShadow: 'var(--shadow-brand)' }}
-                >
-                  {isLoading ? (
-                    <>
-                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Analyzing
-                    </>
-                  ) : (
-                    <>Analyze <ArrowRight className="w-4 h-4" /></>
-                  )}
-                </button>
               </div>
-              {inputError && (
-                <p className="mt-2 text-xs font-medium pl-1" style={{ color: 'var(--color-error)' }}>{inputError}</p>
-              )}
+              <button
+                type="submit"
+                disabled={isLoading || !input.trim()}
+                className="h-14 px-8 rounded-2xl text-white font-bold text-sm transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg sm:min-w-[160px] cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                style={{ 
+                  background: 'var(--gradient-brand)', 
+                  boxShadow: 'var(--shadow-brand)',
+                  cursor: isLoading || !input.trim() ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="animate-spin w-4 h-4" />
+                    <span>Analyzing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Analyze Profile</span>
+                    <ArrowRight className="w-4.5 h-4.5 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
+              </button>
             </form>
+            {inputError && (
+              <p className="mt-1 text-xs font-medium pl-1 text-left" style={{ color: 'var(--color-error)' }}>{inputError}</p>
+            )}
 
             {/* ZIP Upload toggle */}
             <div className="flex items-center justify-center">
