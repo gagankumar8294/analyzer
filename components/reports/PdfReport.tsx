@@ -120,12 +120,15 @@ export function PdfReport({ data }: { data: AnalysisResult }) {
             { label: 'SEO & Tags', value: scores.seo ?? 0 },
             { label: 'Consistency', value: scores.postingConsistency ?? 0 },
             { label: 'Growth', value: scores.growth ?? scores.engagement ?? 0 },
-          ].map(s => (
-            <View key={s.label} style={S.scoreCard}>
-              <Text style={S.scoreVal}>{s.value}%</Text>
-              <Text style={S.scoreLabel}>{s.label}</Text>
-            </View>
-          ))}
+          ].map(s => {
+            const displayVal = s.value % 1 === 0 ? s.value : Number(s.value).toFixed(2);
+            return (
+              <View key={s.label} style={S.scoreCard}>
+                <Text style={S.scoreVal}>{displayVal}%</Text>
+                <Text style={S.scoreLabel}>{s.label}</Text>
+              </View>
+            );
+          })}
         </View>
 
         {data.aiSummary && (

@@ -41,25 +41,37 @@ function getScoreColor(value: number): string {
 const ScoreRing = ({ value, label, subtitle }: { value: number; label: string; subtitle: string }) => {
   const r = 32;
   const c = 2 * Math.PI * r;
-  const color = getScoreColor(value);
+  
+  // Format the float score to 2 decimal places maximum
+  const numValue = typeof value === 'number' ? value : Number(value) || 0;
+  const displayValue = numValue % 1 === 0 ? numValue : Number(numValue.toFixed(2));
+  const color = getScoreColor(numValue);
+
   return (
-    <div className="flex flex-col items-center gap-3 p-5 rounded-xl text-center transition-all" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
-      <div className="relative w-[76px] h-[76px] flex items-center justify-center">
+    <div 
+      className="flex flex-col items-center gap-3 p-4 sm:p-5 rounded-2xl text-center transition-all hover:scale-[1.02] duration-200" 
+      style={{ 
+        background: 'var(--bg-elevated)', 
+        border: '1px solid var(--border-subtle)',
+        boxShadow: 'var(--shadow-sm)'
+      }}
+    >
+      <div className="relative w-[72px] h-[72px] sm:w-[76px] sm:h-[76px] flex items-center justify-center shrink-0">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 72 72">
-          <circle cx="36" cy="36" r={r} stroke="rgba(255,255,255,0.04)" fill="none" strokeWidth="5" />
-          <circle cx="36" cy="36" r={r} fill="none" strokeWidth="5"
+          <circle cx="36" cy="36" r={r} stroke="rgba(255,255,255,0.03)" fill="none" strokeWidth="4.5" />
+          <circle cx="36" cy="36" r={r} fill="none" strokeWidth="4.5"
             stroke={color}
             strokeDasharray={c}
-            strokeDashoffset={c - (value / 100) * c}
+            strokeDashoffset={c - (numValue / 100) * c}
             strokeLinecap="round"
             className="transition-all duration-1000"
           />
         </svg>
-        <span className="absolute text-sm font-extrabold" style={{ color }}>{value}%</span>
+        <span className="absolute text-xs sm:text-sm font-extrabold" style={{ color }}>{displayValue}%</span>
       </div>
-      <div>
-        <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{label}</p>
-        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{subtitle}</p>
+      <div className="flex flex-col gap-1 w-full min-h-[38px] justify-center">
+        <p className="text-xs font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>{label}</p>
+        <p className="text-[10px] sm:text-xs leading-tight" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{subtitle}</p>
       </div>
     </div>
   );
@@ -83,13 +95,13 @@ export default function OverviewTab({ data }: Props) {
   const freqSeries = buildFrequencySeries(posts);
 
   const totalEng = posts.reduce((s, p) => s + p.likes + p.comments, 0);
-  const avgEng   = posts.length ? totalEng / posts.length : 0;
-  const er       = profile.followers > 0 ? ((avgEng / profile.followers) * 100).toFixed(2) : '0.00';
+  const avgEng = posts.length ? totalEng / posts.length : 0;
+  const er = profile.followers > 0 ? ((avgEng / profile.followers) * 100).toFixed(2) : '0.00';
 
   const stats = [
-    { label: 'Followers',     value: formatCount(profile.followers), icon: Users },
-    { label: 'Following',     value: formatCount(profile.following), icon: UserCheck },
-    { label: 'Total Posts',   value: formatCount(profile.totalPosts), icon: ImageIcon },
+    { label: 'Followers', value: formatCount(profile.followers), icon: Users },
+    { label: 'Following', value: formatCount(profile.following), icon: UserCheck },
+    { label: 'Total Posts', value: formatCount(profile.totalPosts), icon: ImageIcon },
     { label: 'Avg Eng. Rate', value: `${er}%`, icon: TrendingUp },
   ];
 
@@ -136,14 +148,14 @@ export default function OverviewTab({ data }: Props) {
         {stats.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={i} className="stat-card">
+            <div key={i} className="stat-card p-4 sm:p-6 gap-3 sm:gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{s.label}</span>
-                <div className="p-2 rounded-lg" style={{ background: 'var(--gradient-brand-soft)' }}>
-                  <Icon className="w-4 h-4" style={{ color: 'var(--brand-primary)' }} />
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{s.label}</span>
+                <div className="p-1.5 sm:p-2 rounded-lg" style={{ background: 'var(--gradient-brand-soft)' }}>
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: 'var(--brand-primary)' }} />
                 </div>
               </div>
-              <span className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>{s.value}</span>
+              <span className="text-xl sm:text-2xl font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>{s.value}</span>
             </div>
           );
         })}
@@ -209,10 +221,10 @@ export default function OverviewTab({ data }: Props) {
           <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Performance Scores</h3>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          <ScoreRing value={scores.engagement}         label="Engagement"  subtitle="Interaction rate" />
+          <ScoreRing value={scores.engagement} label="Engagement" subtitle="Interaction rate" />
           <ScoreRing value={scores.postingConsistency} label="Consistency" subtitle="Upload rhythm" />
-          <ScoreRing value={scores.branding}           label="Branding"    subtitle="Profile setup" />
-          <ScoreRing value={scores.seo}                label="SEO & Tags"  subtitle="Discovery" />
+          <ScoreRing value={scores.branding} label="Branding" subtitle="Profile setup" />
+          <ScoreRing value={scores.seo} label="SEO & Tags" subtitle="Discovery" />
           <ScoreRing value={scores.growth ?? Math.round((scores.engagement + scores.postingConsistency) / 2)} label="Growth" subtitle="Growth signal" />
           <ScoreRing value={scores.competitor ?? Math.round((scores.engagement + scores.branding + scores.seo) / 3)} label="Competitive Edge" subtitle="Market position" />
         </div>
