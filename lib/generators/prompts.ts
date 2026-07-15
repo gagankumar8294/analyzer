@@ -1,13 +1,10 @@
 import type { InstagramProfile, Post } from '../types/instagram';
 
 /**
- * Builds a highly detailed analytical prompt for Gemini Flash.
- * Feeds in normalized profile data and post histories, and instructs
- * Gemini to perform full strategy audits, competitor gap analyses, 
- * scoring calculations, and construct a 30-day content calendar.
+ * Builds the initial lightweight analysis prompt for Gemini.
+ * Excludes heavy competitor templates and 30-day calendar arrays to save tokens.
  */
 export function buildAnalysisPrompt(profile: InstagramProfile, posts: Post[]): string {
-  // Format posts list for the LLM to inspect
   const formattedPosts = posts.slice(0, 15).map((p, idx) => ({
     index: idx + 1,
     type: p.type,
@@ -16,7 +13,7 @@ export function buildAnalysisPrompt(profile: InstagramProfile, posts: Post[]): s
     views: p.views || 'N/A',
     timestamp: p.timestamp,
     hashtags: p.hashtags,
-    caption: p.caption.slice(0, 200) + (p.caption.length > 200 ? '...' : '')
+    caption: p.caption.slice(0, 150) + (p.caption.length > 150 ? '...' : '')
   }));
 
   const inputData = {
@@ -34,7 +31,7 @@ export function buildAnalysisPrompt(profile: InstagramProfile, posts: Post[]): s
   };
 
   return `
-You are an elite Instagram growth strategist, data analyst, and brand consultant. Your job is to analyze the provided Instagram account data and generate a detailed growth audit, competitor gap analysis, strategic scorecards, and a highly actionable 30-day content calendar.
+You are an elite Instagram growth strategist and brand consultant. Analyze this account data and generate a detailed growth audit, SWOT profile, and strategic scorecards.
 
 ### INPUT DATA:
 \`\`\`json
@@ -42,35 +39,31 @@ ${JSON.stringify(inputData, null, 2)}
 \`\`\`
 
 ### MANDATORY INSTRUCTIONS:
-1. You MUST respond with a single, valid JSON object that exactly matches the structure specified below. Do not wrap the JSON in Markdown fences like \`\`\`json ... \`\`\`. Start directly with the opening curly brace.
-2. Analyze the bio, recent posts, and engagement ratios. High comment-to-like ratios indicate high community trust. High reels views relative to followers indicate high viral velocity.
-3. Formulate custom content pillars (3-4 pillars) specific to this niche.
-4. Calculate growth scores, SEO scores, and engagement scores based on the actual metrics provided in the dataset.
-5. List 2 realistic competitor accounts (e.g. "@username_competitor") in the same niche. Outline their estimated metrics and the specific content/operational gaps the user must bridge to beat them.
-6. Design a 30-day content calendar containing a mix of Content Types (REEL, CAROUSEL, POST, STORY). Focus on viral hooks, descriptive captions, relevant hashtags (3-5), and strategic CTAs (e.g. "Comment KEYWORD below").
-7. Generate script outlines for REEL suggestions and thumbnail hook text overlays.
-8. Create a prioritized 5-item action plan (HIGH/MEDIUM/LOW priority) with timeframes.
+1. Respond with a single, valid JSON object matching the schema below. Start directly with the opening curly brace.
+2. Analyze the profile metrics to generate growth, engagement, and SEO scores.
+3. List 2 realistic competitor accounts in the same niche. Include only their basic metrics (username, followers, engagementRate, topHashtags, contentThemes, gapVsTarget, growthScore). Do NOT include sample hooks, caption templates, or calendar suggestions yet.
+4. Generate a prioritized 5-item action plan.
 
 ### JSON OUTPUT SCHEMA TO EMULATE:
 {
   "insights": {
-    "niche": "string (the exact creator niche)",
-    "targetAudience": "string (description of ideal customer avatar)",
-    "brandPositioning": "string (unique value proposition)",
-    "contentPillars": ["string (pillar 1)", "string (pillar 2)", "string (pillar 3)"],
-    "postingConsistency": "string (audit of their schedule and frequency)",
-    "engagementPatterns": "string (analysis of high performing vs low performing formats)",
-    "toneOfVoice": "string (e.g. authoritative, direct, empathetic)",
-    "writingStyle": "string (e.g. short sentences, space-padded bullet lists, hooks first)",
-    "visualBranding": "string (recommendations on color palette, typography, visual layouts)",
-    "hashtagStrategy": "string (hashtag rules to follow)",
-    "ctaStrategy": "string (how to trigger engagement or clicks)",
-    "bestPerformingPatterns": ["string (successful pattern 1)", "string (successful pattern 2)"],
+    "niche": "string (niche)",
+    "targetAudience": "string",
+    "brandPositioning": "string",
+    "contentPillars": ["string", "string", "string"],
+    "postingConsistency": "string",
+    "engagementPatterns": "string",
+    "toneOfVoice": "string",
+    "writingStyle": "string",
+    "visualBranding": "string",
+    "hashtagStrategy": "string",
+    "ctaStrategy": "string",
+    "bestPerformingPatterns": ["string", "string"],
     "strengths": ["string", "string"],
     "weaknesses": ["string", "string"],
     "opportunities": ["string", "string"],
     "audiencePainPoints": ["string", "string"],
-    "estimatedContentStrategy": "string (overall strategic growth path)"
+    "estimatedContentStrategy": "string"
   },
   "scores": {
     "growth": number (0-100),
@@ -86,54 +79,147 @@ ${JSON.stringify(inputData, null, 2)}
     {
       "username": "string (realistic niche handle, e.g. plantsofinstagram)",
       "followers": number,
-      "engagementRate": number (percentage like 3.5),
+      "engagementRate": number (e.g. 3.5),
       "avgLikes": number,
       "avgComments": number,
       "avgReelViews": number,
       "postingFrequency": "string (e.g. '5x per week')",
-      "topHashtags": ["string (5 most used hashtags)"],
-      "contentThemes": ["string (2-3 content themes)"],
+      "topHashtags": ["string"],
+      "contentThemes": ["string"],
       "captionStyle": "string",
       "ctaPatterns": ["string"],
-      "gapVsTarget": ["string (what they do better)"],
-      "growthScore": number (0-100),
-      "niche": "string (micro-niche they dominate, e.g. 'Indoor tropical plants')",
-      "reason": "string (1-2 sentences on why they are winning in this niche)",
-      "contentFormats": ["string (e.g. 'Reels 70%', 'Carousels 20%', 'Stories 10%')"],
-      "avgSavesRate": number (estimated saves as % of followers, e.g. 0.8),
-      "strengths": ["string (2-3 strategic strengths)"],
-      "weaknesses": ["string (1-2 weaknesses to exploit)"],
-      "learningOpportunities": ["string (3 original content ideas to adapt — NOT copy — from their style)"],
-      "sampleHooks": ["string (3 original viral hook lines written in their style but 100% new)"],
-      "sampleCaptions": ["string (2 full caption templates in their voice — original, inspired by their approach)"],
-      "targetHashtags": ["string (6-8 hashtags from their niche to adopt)"],
-      "postingDays": ["string (best days they post, e.g. 'Monday', 'Thursday', 'Saturday')"],
-      "growthTip": "string (1 precise actionable tip to outperform this specific competitor)"
-    }
-  ],
-  "calendar": [
-    {
-      "date": "string (YYYY-MM-DD format starting from today, iterate for 30 consecutive days)",
-      "contentType": "REEL | CAROUSEL | POST | STORY",
-      "theme": "string (pillar or theme)",
-      "idea": "string (the video/carousel concept)",
-      "hook": "string (the vital 3-second visual or verbal hook)",
-      "caption": "string (caption body to copy paste)",
-      "hashtags": ["string"],
-      "cta": "string (call to action)",
-      "script": "string (optional: script lines for speaking or text on screen if Reel)",
-      "thumbnailText": "string (optional: text overlay for the thumbnail/cover)"
+      "gapVsTarget": ["string"],
+      "growthScore": number
     }
   ],
   "actionPlan": [
     {
       "priority": "HIGH | MEDIUM | LOW",
-      "category": "string (e.g. Bio, Video Editing, Hashtags)",
-      "action": "string (clear, direct instruction)",
-      "expectedImpact": "string (expected result)",
-      "timeframe": "string (e.g. 24 hours, 7 days)"
+      "category": "string",
+      "action": "string",
+      "expectedImpact": "string",
+      "timeframe": "string"
     }
   ]
 }
+`;
+}
+
+/**
+ * Builds the deep competitor analysis prompt.
+ * Asks Gemini for original hook scripts, caption templates, and niche-specific growth recommendations for each competitor.
+ */
+export function buildCompetitorDeepPrompt(profile: InstagramProfile, competitors: any[]): string {
+  const targetInfo = {
+    username: profile.username,
+    bio: profile.bio,
+    category: profile.category || 'N/A',
+    followers: profile.followers
+  };
+
+  return `
+You are a competitor research analyst. Take the following Instagram profile and its identified competitors, and perform a deep-dive intelligence audit.
+
+### TARGET PROFILE:
+\`\`\`json
+${JSON.stringify(targetInfo, null, 2)}
+\`\`\`
+
+### COMPETITORS TO ENRICH:
+\`\`\`json
+${JSON.stringify(competitors, null, 2)}
+\`\`\`
+
+### MANDATORY INSTRUCTIONS:
+1. Respond with a single, valid JSON array containing enriched competitor objects. Start directly with the opening square bracket.
+2. For each competitor, generate:
+   - "niche" micro-niche detail.
+   - "reason" why they succeed.
+   - "contentFormats" percentages.
+   - "avgSavesRate" percentage.
+   - 3 "strengths" and 2 "weaknesses".
+   - 3 "learningOpportunities" (ideas to adapt, not copy).
+   - 3 "sampleHooks" (original scroll-stoppers in their style).
+   - 2 "sampleCaptions" (full caption templates in their voice).
+   - 5-8 "targetHashtags" to borrow.
+   - "postingDays" list.
+   - "growthTip" to beat them.
+3. Make sure all hooks and captions are completely original and do not copy existing copyright materials.
+
+### JSON OUTPUT SCHEMA TO EMULATE:
+[
+  {
+    "username": "string (matching inputted competitor username)",
+    "followers": number,
+    "engagementRate": number,
+    "avgLikes": number,
+    "avgComments": number,
+    "avgReelViews": number,
+    "postingFrequency": "string",
+    "topHashtags": ["string"],
+    "contentThemes": ["string"],
+    "captionStyle": "string",
+    "ctaPatterns": ["string"],
+    "gapVsTarget": ["string"],
+    "growthScore": number,
+    "niche": "string",
+    "reason": "string",
+    "contentFormats": ["string"],
+    "avgSavesRate": number,
+    "strengths": ["string"],
+    "weaknesses": ["string"],
+    "learningOpportunities": ["string"],
+    "sampleHooks": ["string"],
+    "sampleCaptions": ["string"],
+    "targetHashtags": ["string"],
+    "postingDays": ["string"],
+    "growthTip": "string"
+  }
+]
+`;
+}
+
+/**
+ * Builds the 30-day content calendar prompt.
+ * Generates daily topics, hooks, ideas, hashtags, captions, and script templates.
+ */
+export function buildCalendarDeepPrompt(profile: InstagramProfile, insights: any): string {
+  const profileInfo = {
+    username: profile.username,
+    bio: profile.bio,
+    category: profile.category || 'N/A',
+    contentPillars: insights.contentPillars || [],
+    niche: insights.niche || 'N/A'
+  };
+
+  return `
+You are a social media copywriter. Generate a 30-day content calendar starting from today for this Instagram profile.
+
+### PROFILE & INSIGHTS:
+\`\`\`json
+${JSON.stringify(profileInfo, null, 2)}
+\`\`\`
+
+### MANDATORY INSTRUCTIONS:
+1. Respond with a single, valid JSON array containing exactly 30 calendar days. Start directly with the opening square bracket.
+2. Mix content formats (REEL, CAROUSEL, POST, STORY).
+3. Include specific Hooks, copy-paste Captions, Hashtags, CTAs, and Scripts (for Reels).
+4. Do NOT use markdown code fences in your reply.
+
+### JSON OUTPUT SCHEMA TO EMULATE:
+[
+  {
+    "date": "string (YYYY-MM-DD)",
+    "contentType": "REEL | CAROUSEL | POST | STORY",
+    "theme": "string (pillar or theme)",
+    "idea": "string (video concept)",
+    "hook": "string (3-second hook)",
+    "caption": "string (caption text)",
+    "hashtags": ["string"],
+    "cta": "string",
+    "script": "string (Reel script, speaking lines)",
+    "thumbnailText": "string"
+  }
+]
 `;
 }

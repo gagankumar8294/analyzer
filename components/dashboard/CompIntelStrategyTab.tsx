@@ -3,11 +3,13 @@
 import React, { useState } from 'react';
 import { Target, CheckCircle2, Calendar, ShieldAlert, Sparkles, Award } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
+import { useAnalysisStore } from '@/store/analysisStore';
 
 interface Props { data: AnalysisResult; }
 
 export default function CompIntelStrategyTab({ data }: Props) {
-  const competitors: any[] = data.competitors ?? [];
+  const { compIntelData } = useAnalysisStore();
+  const competitors: any[] = compIntelData ?? data.competitors ?? [];
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
   if (!competitors.length) {

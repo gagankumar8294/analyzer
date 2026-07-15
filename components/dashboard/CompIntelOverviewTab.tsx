@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Users2, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Lightbulb } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
 import { formatCount } from '@/lib/utils/engagement';
+import { useAnalysisStore } from '@/store/analysisStore';
 
 interface Props { data: AnalysisResult; }
 
@@ -23,7 +24,9 @@ const ChartTooltip = ({ active, payload, label }: any) => {
 };
 
 export default function CompIntelOverviewTab({ data }: Props) {
-  const competitors: any[] = data.competitors ?? [];
+  const { compIntelData } = useAnalysisStore();
+  const competitors: any[] = compIntelData ?? data.competitors ?? [];
+
 
   if (!competitors.length) {
     return (

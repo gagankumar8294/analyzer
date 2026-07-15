@@ -32,7 +32,18 @@ export default function AnalyzePage({ params }: Props) {
   const { username: rawUsername } = React.use(params);
   const username = decodeURIComponent(rawUsername);
 
-  const { status, result, error, activeTab, reset } = useAnalysisStore();
+  const { 
+    status, 
+    result, 
+    error, 
+    activeTab, 
+    reset,
+    compIntelStatus,
+    fetchCompIntel,
+    calendarStatus,
+    fetchCalendar
+  } = useAnalysisStore();
+
   const { analyze } = useAnalysis();
   const fetched = useRef(false);
 
@@ -42,6 +53,17 @@ export default function AnalyzePage({ params }: Props) {
       analyze(username);
     }
   }, [username, result, status, analyze]);
+
+  // Trigger on-demand fetching when tab swaps to competitor intel or calendar planner
+  useEffect(() => {
+    if (status === 'success') {
+      if (['comp-overview', 'comp-content', 'comp-gaps', 'comp-strategy'].includes(activeTab)) {
+        fetchCompIntel();
+      } else if (activeTab === 'calendar') {
+        fetchCalendar();
+      }
+    }
+  }, [activeTab, status, fetchCompIntel, fetchCalendar]);
 
   const renderContent = () => {
     if (status === 'loading') {
@@ -62,6 +84,16 @@ export default function AnalyzePage({ params }: Props) {
     }
 
     if (status === 'success' && result) {
+      // 1. Show skeleton for competitor intel tabs if fetching
+      if (['comp-overview', 'comp-content', 'comp-gaps', 'comp-strategy'].includes(activeTab) && compIntelStatus === 'loading') {
+        return <GeneralSkeleton />;
+      }
+
+      // 2. Show skeleton for calendar tab if generating
+      if (activeTab === 'calendar' && calendarStatus === 'loading') {
+        return <GeneralSkeleton />;
+      }
+
       switch (activeTab) {
         case 'overview':       return <OverviewTab    data={result} />;
         case 'content':        return <ContentTab     data={result} />;
@@ -83,6 +115,7 @@ export default function AnalyzePage({ params }: Props) {
 
     return <OverviewSkeleton />;
   };
+
 
 
   return (

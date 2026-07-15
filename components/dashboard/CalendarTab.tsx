@@ -10,7 +10,8 @@ interface CalendarTabProps {
 }
 
 export default function CalendarTab({ data }: CalendarTabProps) {
-  const { calendar } = data;
+  const calendarData = useAnalysisStore((state) => state.calendarData);
+  const calendar = calendarData ?? [];
   const updateCalendarItem = useAnalysisStore((state) => state.updateCalendarItem);
 
   const [filterType, setFilterType] = useState<'ALL' | 'REEL' | 'CAROUSEL' | 'POST' | 'STORY'>('ALL');
@@ -35,6 +36,7 @@ export default function CalendarTab({ data }: CalendarTabProps) {
     if (filterType === 'ALL') return true;
     return item.contentType === filterType;
   });
+
 
   const getFormatIcon = (type: string) => {
     switch (type.toUpperCase()) {

@@ -3,11 +3,13 @@
 import React, { useState } from 'react';
 import { Copy, Check, Sparkles, Lightbulb, Type, Hash, Info } from 'lucide-react';
 import type { AnalysisResult } from '@/lib/types/analysis';
+import { useAnalysisStore } from '@/store/analysisStore';
 
 interface Props { data: AnalysisResult; }
 
 export default function CompIntelContentTab({ data }: Props) {
-  const competitors: any[] = data.competitors ?? [];
+  const { compIntelData } = useAnalysisStore();
+  const competitors: any[] = compIntelData ?? data.competitors ?? [];
   const [activeCompIndex, setActiveCompIndex] = useState(0);
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
