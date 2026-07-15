@@ -20,6 +20,12 @@ const ActionPlanTab  = dynamic(() => import('@/components/dashboard/ActionPlanTa
 const GeneratorTab   = dynamic(() => import('@/components/dashboard/GeneratorTab'),   { loading: () => <GeneralSkeleton /> });
 const TrendsTab      = dynamic(() => import('@/components/dashboard/TrendsTab'),      { loading: () => <GeneralSkeleton /> });
 
+// Competitor Intel sub-tabs
+const CompIntelOverviewTab = dynamic(() => import('@/components/dashboard/CompIntelOverviewTab'), { loading: () => <GeneralSkeleton /> });
+const CompIntelContentTab  = dynamic(() => import('@/components/dashboard/CompIntelContentTab'),  { loading: () => <GeneralSkeleton /> });
+const CompIntelGapsTab     = dynamic(() => import('@/components/dashboard/CompIntelGapsTab'),     { loading: () => <GeneralSkeleton /> });
+const CompIntelStrategyTab = dynamic(() => import('@/components/dashboard/CompIntelStrategyTab'), { loading: () => <GeneralSkeleton /> });
+
 interface Props { params: Promise<{ username: string }>; }
 
 export default function AnalyzePage({ params }: Props) {
@@ -57,21 +63,27 @@ export default function AnalyzePage({ params }: Props) {
 
     if (status === 'success' && result) {
       switch (activeTab) {
-        case 'overview':    return <OverviewTab    data={result} />;
-        case 'content':     return <ContentTab     data={result} />;
-        case 'insights':    return <InsightsTab    data={result} />;
-        case 'competitors': return <CompetitorsTab data={result} />;
-        case 'calendar':    return <CalendarTab    data={result} />;
-        case 'action':      return <ActionPlanTab  data={result} />;
-        case 'generator':   return <GeneratorTab />;
-        case 'trends':      return <TrendsTab      data={result} />;
-        case 'report':      return <ReportTab      data={result} />;
-        default:            return <OverviewTab    data={result} />;
+        case 'overview':       return <OverviewTab    data={result} />;
+        case 'content':        return <ContentTab     data={result} />;
+        case 'insights':       return <InsightsTab    data={result} />;
+        case 'competitors':    return <CompetitorsTab data={result} />;
+        case 'calendar':       return <CalendarTab    data={result} />;
+        case 'action':         return <ActionPlanTab  data={result} />;
+        case 'generator':      return <GeneratorTab />;
+        case 'trends':         return <TrendsTab      data={result} />;
+        case 'report':         return <ReportTab      data={result} />;
+        // Competitor Intel sub-tabs
+        case 'comp-overview':  return <CompIntelOverviewTab data={result} />;
+        case 'comp-content':   return <CompIntelContentTab  data={result} />;
+        case 'comp-gaps':      return <CompIntelGapsTab     data={result} />;
+        case 'comp-strategy':  return <CompIntelStrategyTab data={result} />;
+        default:               return <OverviewTab    data={result} />;
       }
     }
 
     return <OverviewSkeleton />;
   };
+
 
   return (
     <>

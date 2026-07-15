@@ -84,19 +84,31 @@ ${JSON.stringify(inputData, null, 2)}
   },
   "competitors": [
     {
-      "username": "string (e.g. competitor_handle)",
+      "username": "string (realistic niche handle, e.g. plantsofinstagram)",
       "followers": number,
-      "engagementRate": number,
+      "engagementRate": number (percentage like 3.5),
       "avgLikes": number,
       "avgComments": number,
       "avgReelViews": number,
-      "postingFrequency": "string",
-      "topHashtags": ["string"],
-      "contentThemes": ["string"],
+      "postingFrequency": "string (e.g. '5x per week')",
+      "topHashtags": ["string (5 most used hashtags)"],
+      "contentThemes": ["string (2-3 content themes)"],
       "captionStyle": "string",
       "ctaPatterns": ["string"],
-      "gapVsTarget": ["string (what they do better/more of)"],
-      "growthScore": number
+      "gapVsTarget": ["string (what they do better)"],
+      "growthScore": number (0-100),
+      "niche": "string (micro-niche they dominate, e.g. 'Indoor tropical plants')",
+      "reason": "string (1-2 sentences on why they are winning in this niche)",
+      "contentFormats": ["string (e.g. 'Reels 70%', 'Carousels 20%', 'Stories 10%')"],
+      "avgSavesRate": number (estimated saves as % of followers, e.g. 0.8),
+      "strengths": ["string (2-3 strategic strengths)"],
+      "weaknesses": ["string (1-2 weaknesses to exploit)"],
+      "learningOpportunities": ["string (3 original content ideas to adapt — NOT copy — from their style)"],
+      "sampleHooks": ["string (3 original viral hook lines written in their style but 100% new)"],
+      "sampleCaptions": ["string (2 full caption templates in their voice — original, inspired by their approach)"],
+      "targetHashtags": ["string (6-8 hashtags from their niche to adopt)"],
+      "postingDays": ["string (best days they post, e.g. 'Monday', 'Thursday', 'Saturday')"],
+      "growthTip": "string (1 precise actionable tip to outperform this specific competitor)"
     }
   ],
   "calendar": [

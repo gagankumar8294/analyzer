@@ -6,7 +6,8 @@ import {
   LayoutDashboard, BarChart3, Brain,
   Users2, CalendarDays,
   ArrowLeft, Sparkles, Download, Loader2,
-  CheckSquare, PenTool, TrendingUp
+  CheckSquare, PenTool, TrendingUp,
+  Crosshair, Lightbulb, ArrowUpDown, Target
 } from 'lucide-react';
 import { useAnalysisStore } from '@/store/analysisStore';
 import { OverviewSkeleton, ContentSkeleton, GeneralSkeleton } from '../ui/Loader';
@@ -18,6 +19,7 @@ interface DashboardShellProps {
 const NAV_SECTIONS = [
   {
     label: 'Analytics',
+    accent: false,
     items: [
       { id: 'overview',     label: 'Overview',     icon: LayoutDashboard },
       { id: 'content',      label: 'Content',      icon: BarChart3       },
@@ -27,6 +29,7 @@ const NAV_SECTIONS = [
   },
   {
     label: 'Strategy',
+    accent: false,
     items: [
       { id: 'calendar',     label: 'Planner',      icon: CalendarDays    },
       { id: 'action',       label: 'Action Plan',  icon: CheckSquare     },
@@ -34,7 +37,18 @@ const NAV_SECTIONS = [
       { id: 'trends',       label: 'Trends',       icon: TrendingUp      },
     ],
   },
+  {
+    label: '✦ Competitor Intel',
+    accent: true,
+    items: [
+      { id: 'comp-overview', label: 'Profiles',      icon: Crosshair    },
+      { id: 'comp-content',  label: 'Content Ideas', icon: Lightbulb    },
+      { id: 'comp-gaps',     label: 'Gap Analysis',  icon: ArrowUpDown  },
+      { id: 'comp-strategy', label: 'Beat Them',     icon: Target       },
+    ],
+  },
 ];
+
 
 const ALL_NAV = NAV_SECTIONS.flatMap(s => s.items);
 
@@ -110,8 +124,20 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         {/* Nav sections */}
         <nav className="px-4 py-3 overflow-y-auto flex-1">
           {NAV_SECTIONS.map((section, si) => (
-            <div key={si}>
-              <p className="sidebar-section-label">{section.label}</p>
+            <div key={si} style={section.accent ? { marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--border-subtle)' } : {}}>
+              <p
+                className="sidebar-section-label"
+                style={section.accent ? {
+                  background: 'linear-gradient(90deg, #f97316, #fb923c)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  fontWeight: 700,
+                  letterSpacing: '0.04em',
+                } : {}}
+              >
+                {section.label}
+              </p>
               <div className="flex flex-col gap-1">
                 {section.items.map(item => {
                   const Icon = item.icon;
@@ -121,14 +147,20 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
                       className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
+                      style={isActive && section.accent ? {
+                        background: 'rgba(249,115,22,0.12)',
+                        color: '#f97316',
+                        borderColor: 'rgba(249,115,22,0.25)',
+                      } : {}}
                     >
-                      <Icon className="w-4.5 h-4.5 shrink-0" />
+                      <Icon className="w-4.5 h-4.5 shrink-0" style={isActive && section.accent ? { color: '#f97316' } : {}} />
                       {item.label}
                     </button>
                   );
                 })}
               </div>
             </div>
+
           ))}
         </nav>
 
