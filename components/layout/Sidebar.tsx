@@ -26,7 +26,7 @@ export default function Sidebar({ onBack }: SidebarProps) {
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'content', label: 'Content Analysis', icon: BarChart3 },
     { id: 'insights', label: 'AI Insights', icon: Brain },
-    { id: 'competitors', label: 'Competitors', icon: Users2 },
+    // { id: 'competitors', label: 'Competitors', icon: Users2 },
     { id: 'action', label: 'Action Plan', icon: ListTodo },
     { id: 'calendar', label: 'Content Calendar', icon: CalendarDays },
     { id: 'generator', label: 'AI Generator', icon: PenTool },

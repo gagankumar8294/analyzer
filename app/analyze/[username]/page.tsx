@@ -13,7 +13,7 @@ import ProgressOverlay from '@/components/ui/ProgressOverlay';
 const OverviewTab    = dynamic(() => import('@/components/dashboard/OverviewTab'),    { loading: () => <OverviewSkeleton /> });
 const ContentTab     = dynamic(() => import('@/components/dashboard/ContentTab'),     { loading: () => <ContentSkeleton /> });
 const InsightsTab    = dynamic(() => import('@/components/dashboard/InsightsTab'),    { loading: () => <GeneralSkeleton /> });
-const CompetitorsTab = dynamic(() => import('@/components/dashboard/CompetitorsTab'), { loading: () => <GeneralSkeleton /> });
+// const CompetitorsTab = dynamic(() => import('@/components/dashboard/CompetitorsTab'), { loading: () => <GeneralSkeleton /> });
 const CalendarTab    = dynamic(() => import('@/components/dashboard/CalendarTab'),    { loading: () => <GeneralSkeleton /> });
 const ReportTab      = dynamic(() => import('@/components/dashboard/ReportTab'),      { loading: () => <GeneralSkeleton /> });
 const ActionPlanTab  = dynamic(() => import('@/components/dashboard/ActionPlanTab'),  { loading: () => <GeneralSkeleton /> });
@@ -98,7 +98,7 @@ export default function AnalyzePage({ params }: Props) {
         case 'overview':       return <OverviewTab    data={result} />;
         case 'content':        return <ContentTab     data={result} />;
         case 'insights':       return <InsightsTab    data={result} />;
-        case 'competitors':    return <CompetitorsTab data={result} />;
+        // case 'competitors':    return <CompetitorsTab data={result} />;
         case 'calendar':       return <CalendarTab    data={result} />;
         case 'action':         return <ActionPlanTab  data={result} />;
         case 'generator':      return <GeneratorTab />;
